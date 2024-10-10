@@ -14,6 +14,9 @@
 #define MSG_SIZE 250
 #define MAX_CLIENTS 30
 
+
+/***** hola miguel angel ****** */
+
 /*
  * El servidor ofrece el servicio de un chat rico
  me gusta el sexo cabron
