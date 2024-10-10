@@ -130,23 +130,25 @@ int main (){
                                     numClientes++;
                                     FD_SET(new_sd,&readfds);
 
-									bzero(buffer,sizeof(buffer));
-                                    strcpy(buffer, "+Ok. Usuario conectado\n");
-                                
-                                    send(new_sd,buffer,sizeof(buffer),0);
+                                    send_to_user(new_sd, buffer, sizeof(buffer), "+Ok. Usuario conectado\n");
+									// bzero(buffer,sizeof(buffer));
+                                    // strcpy(buffer, "+Ok. Usuario conectado\n");
+                                    // send(new_sd,buffer,sizeof(buffer),0);
                                 
                                     for(j=0; j<(numClientes-1);j++){
                                     
-                                        bzero(buffer,sizeof(buffer));
                                         sprintf(buffer, "+Ok. Nuevo Cliente conectado en <%d>",new_sd);
-                                        send(arrayClientes[j],buffer,sizeof(buffer),0);
+                                        send_to_user(arrayClientes[j], buffer, sizeof(buffer), buffer);
+                                        // bzero(buffer,sizeof(buffer));
+                                        // send(arrayClientes[j],buffer,sizeof(buffer),0);
                                     }
                                 }
                                 else
                                 {
-                                    bzero(buffer,sizeof(buffer));
-                                    strcpy(buffer,"-Err. Demasiados clientes conectados\n");
-                                    send(new_sd,buffer,sizeof(buffer),0);
+                                    send_to_user(new_sd, buffer, sizeof(buffer), "-Err. Demasiados clientes conectados\n");
+                                    // bzero(buffer,sizeof(buffer));
+                                    // strcpy(buffer,"-Err. Demasiados clientes conectados\n");
+                                    // send(new_sd,buffer,sizeof(buffer),0);
                                     close(new_sd);
                                 } 
                             }
@@ -161,9 +163,10 @@ int main (){
                              
                                 for (j = 0; j < numClientes; j++){
 
-                                    bzero(buffer, sizeof(buffer));
-                                    strcpy(buffer,"+Ok. Desconexión servidor\n"); 
-                                    send(arrayClientes[j],buffer , sizeof(buffer),0);
+                                    send_to_user(arrayClientes[j], buffer, sizeof(buffer), "+Ok. Desconexión servidor\n");
+                                    // bzero(buffer, sizeof(buffer));
+                                    // strcpy(buffer,"+Ok. Desconexión servidor\n"); 
+                                    // send(arrayClientes[j],buffer , sizeof(buffer),0);
                                     close(arrayClientes[j]);
                                     FD_CLR(arrayClientes[j],&readfds);
                                 }
