@@ -14,7 +14,8 @@
 #define MAX_CLIENTS 30
 
 /*
- * El servidor ofrece el servicio de un chat
+ * El servidor ofrece el servicio de un chat rico
+ 
  */
 
 void manejador(int signum);
