@@ -15,7 +15,7 @@
 
 /*
  * El servidor ofrece el servicio de un chat rico
- 
+ me gusta el sexo cabron
  */
 
 void manejador(int signum);
