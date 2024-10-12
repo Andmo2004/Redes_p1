@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -15,7 +16,6 @@ using namespace std;
 
 int main ( )
 {
-  
 	/*---------------------------------------------------- 
 		Descriptor del socket y buffer de datos                
 	-----------------------------------------------------*/
