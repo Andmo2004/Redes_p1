@@ -1,3 +1,4 @@
+#include <iostream>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -7,6 +8,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+
+using namespace std;
 
 /* El cliente manda cadena de textos al servidor hasta que manda la cadena FIN */ 
 

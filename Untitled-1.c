@@ -123,3 +123,8 @@ bool existe_usuario(const char* usuario, const char** arrayClientes, size_t numC
     }
     return false;
 }
+
+int main(){
+
+    
+}
