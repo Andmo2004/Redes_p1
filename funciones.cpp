@@ -36,3 +36,12 @@ void rellenarVectorUsuario(vector<string> &usernames, vector<string> &passwords)
     fich.close();
 }
 
+bool existe_usuario(string &username, map<string, string> &userData)
+{
+    // find() para buscar el username en el map
+    if (userData.find(username) != userData.end()) {
+        return true;
+    } else {
+        return false;
+    }
+}

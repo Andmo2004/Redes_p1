@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <arpa/inet.h>
+#include <funciones.hpp>
 #include "bj_server.h"
 
 #define MSG_SIZE 250
@@ -348,16 +349,5 @@ void send_to_user(int i, char *buffer, size_t buffer_size, const char *msg)
 bool buscar_palabra(const char *cadena, const char *palabra) 
 {
     if (strstr(cadena, palabra) != NULL) {return true;}
-    return false;
-};
-
-bool existe_usuario(const char* usuario, const char** arrayClientes, size_t numClientes)
-{
-    for(size_t i=0; i < numClientes; ++i)
-    {
-        if(strcmp(usuario, arrayClientes[i])){
-            return true;
-        }
-    }
     return false;
 };
