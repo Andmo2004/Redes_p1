@@ -17,7 +17,6 @@
 #define MAX_CLIENTS 30
 
 
-/***** hola miguel angel ****** */
 
 /*
  * El servidor ofrece el servicio de un chat rico
@@ -190,19 +189,12 @@ int main (){
                                 if(sscanf(buffer,"USUARIO %d",&num)!=1){
 
                                     send_to_user(i, buffer, sizeof(buffer), "-Err. Usuario incorrecto\n");
-                                    // bzero(buffer,sizeof(buffer));
-                                    // strcpy(buffer, "-Err. Usuario incorrecto\n");
-                                    // send(i,buffer,sizeof(buffer),0);
                                 }
                                 else{
                                     
                                     if(num==i){
 
                                         send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario correcto\n");
-                                        // bzero(buffer,sizeof(buffer));
-                                        // strcpy(buffer, "+Ok. Usuario correcto\n");
-                                        // send(i,buffer,sizeof(buffer),0);
-
                                         bzero(buffer,sizeof(buffer));
                                         recibidos = recv(i,buffer,sizeof(buffer),0);
 
@@ -211,19 +203,14 @@ int main (){
                                             if(sscanf(buffer,"PASSWORD %d",&num2)!=1){
 
                                                 send_to_user(i, buffer, sizeof(buffer), "-Err. Error en la validación\n");
-                                                // bzero(buffer,sizeof(buffer));
-                                                // strcpy(buffer, "-Err. Error en la validación\n");
-                                                // send(i,buffer,sizeof(buffer),0);
+                                               
                                             }
                                             else{
 
                                                 if(num2==i){
                                                     
                                                     send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario validado\n");
-                                                    // bzero(buffer,sizeof(buffer));
-                                                    // strcpy(buffer, "+Ok. Usuario validado\n");
-                                                    // send(i,buffer,sizeof(buffer),0);
-
+                                      
                                                     bzero(buffer,sizeof(buffer));
                                                     recibidos = recv(i,buffer,sizeof(buffer),0);
                                                     //seguir con el flujo
@@ -233,9 +220,7 @@ int main (){
                                                 }
                                                 else{
                                                     send_to_user(i, buffer, sizeof(buffer), "-Err. Error en la validación\n");
-                                                    // bzero(buffer,sizeof(buffer));
-                                                    // strcpy(buffer, "-Err. Error en la validación\n");
-                                                    // send(i,buffer,sizeof(buffer),0);
+                                                  
                                                 }
                                             }
                                         }
@@ -243,9 +228,7 @@ int main (){
                                     else{
                                         
                                         send_to_user(i, buffer, sizeof(buffer), "-Err. Usuario incorrecto\n");
-                                        // bzero(buffer,sizeof(buffer));
-                                        // strcpy(buffer, "-Err. Usuario incorrecto\n");
-                                        // send(i,buffer,sizeof(buffer),0);
+                            
                                     }
 
                                 }
@@ -253,9 +236,7 @@ int main (){
                                 if(sscanf(buffer,"REGISTRO -u %d -p %d",&num,&num2)!=2){
 
                                     send_to_user(i, buffer, sizeof(buffer), "-Err. Error en registro\n");
-                                    // bzero(buffer,sizeof(buffer));
-                                    // strcpy(buffer, "-Err. Error en registro\n");
-                                    // send(i,buffer,sizeof(buffer),0);
+                                    
                                 }
                                 else{
                                     //comprobación si el user existe ya?

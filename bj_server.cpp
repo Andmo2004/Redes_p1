@@ -192,102 +192,114 @@ int main (){
 
                                     // comprobamos que haya introducido un nombre de usuario
                                     if (sscanf(buffer, "%s %s", temp, username) == 2){
-                                        if(!existe_usuario(std::string(username), userData)){
+                                        if(!existe_usuario(string(username), userData)){
+                                            
                                             send_to_user(i, buffer, sizeof(buffer), "-Err. Nombre de usuario no existente \n");
                                             salirCliente(i,&readfds,&numClientes,arrayClientes);
-
-                                        } else {
+                                        } 
+                                        else {
                                             int k=0;
                                             while(k<3){
                                                 send_to_user(i, buffer, sizeof(buffer), " >> Introduzca su contrasenia: PASSWORD password \n");
                                                 bzero(buffer, sizeof(buffer));
-                                                recv(i, buffer, sizeof(buffer), 0);
-                                                
-                                                if(buscar_palabra(buffer, "PASSWORD")){
-                                                    if (sscanf(buffer, "%s %s", temp, password) == 2){
-                                                        if(!contrasenia_correcta(std::string(username), std::string(password), userData)){
-                                                            send_to_user(i, buffer, sizeof(buffer), "Contrasenia incorrecta tienes 3 intentos \n");
-                                                            k++;
-                                                            if(k == 3){
-                                                                send_to_user(i, buffer, sizeof(buffer), "-Err. Has metido la contrasenia 3 veces mal \n");
-                                                                salirCliente(i,&readfds,&numClientes,arrayClientes);
-                                                            }
+                                                int recibido=recv(i, buffer, sizeof(buffer), 0);
+                                                if(recibido>0){
 
-                                                        } else {
-                                                            send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario validado\n");
-                                                            break;
+                                                    if(buscar_palabra(buffer, "PASSWORD")){
+
+                                                        if (sscanf(buffer, "%s %s", temp, password) == 2){
+                                                            if(!contrasenia_correcta(string(username), string(password), userData)){
+                                                                send_to_user(i, buffer, sizeof(buffer), "-Err. Contrasenia incorrecta tienes 3 intentos \n");
+                                                                k++;
+                                                                if(k == 3){
+                                                                    send_to_user(i, buffer, sizeof(buffer), "-Err. Has metido la contrasenia 3 veces mal \n");
+                                                                    salirCliente(i,&readfds,&numClientes,arrayClientes);
+                                                                }
+
+                                                            } 
+                                                            else {
+
+                                                                send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario validado\n");
+                                                /*++++++++++++++++++++++++++++INICIAR PARTIDA++++++++++++++++++++++++++++++++*/
+                                                                bzero(buffer, sizeof(buffer));
+                                                                int recibido2=recv(i,buffer,sizeof(buffer),0);
+                                                                if(recibido2>0){
+
+                                                                    if(buscar_palabra(buffer,"INICIAR-PARTIDA")){
+
+                                                                        send_to_user(i, buffer, sizeof(buffer), "+Ok. Esperando a otro jugador...\n");
+                                                                        
+                                                                    }
+                                                                }
+                                                /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
                                         }
-
-
-                                    } else {
+                                    } 
+                                    else {
                                         send_to_user(i, buffer, sizeof(buffer), "-Err. Nombre de usuario no introducido \n");
                                         salirCliente(i,&readfds,&numClientes,arrayClientes);
                                     }
-                                
+                                } 
                                 /*+++++++++++++++++++++++++++++++ REGISTRO +++++++++++++++++++++++++++++++*/
                                 
-                                } if (buscar_palabra(buffer, "REGISTRO")) {
+                                else if(buscar_palabra(buffer, "REGISTRO")) {
                                     if(sscanf(buffer,"REGISTRO -u %s -p %s",username,password)==2){
                                         if(updateUserData(std::string(username), std::string(password), userData)){
                                             send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario registrado correctamente, sal e inicia sesion\n");
                                             salirCliente(i,&readfds,&numClientes,arrayClientes);
-                                        } else {
+                                        } 
+                                        else {
                                             send_to_user(i, buffer, sizeof(buffer), "-Err. El usuario ya esta registrado\n");
                                             salirCliente(i,&readfds,&numClientes,arrayClientes);
                                         }
-                                    } else {
+                                    } 
+                                    else {
                                         send_to_user(i, buffer, sizeof(buffer), "-Err. La informacion no se ha introducido correctamente\n");
                                         salirCliente(i,&readfds,&numClientes,arrayClientes);
                                     }
-                                } if (buscar_palabra(buffer, "SALIR")) {
-                                    salirCliente(i,&readfds,&numClientes,arrayClientes); 
-                                } else {
-                                    send_to_user(i, buffer, sizeof(buffer), "-Err. El usuario ya esta registrado\n");
                                 }
-                                
-                                /*
-                                    INICIAR PARTIDA
-                                */
+                                /*++++++++++++++SALIR+++++++++++++++++++++++++++++++*/
+                                else if(buscar_palabra(buffer, "SALIR")) {
+                                    salirCliente(i,&readfds,&numClientes,arrayClientes); 
+                                } 
                             }
                                 
-                                //final
-                                if(strcmp(buffer,"SALIR\n") == 0){
+                            if(strcmp(buffer,"SALIR\n") == 0){
                                     
-                                    salirCliente(i,&readfds,&numClientes,arrayClientes);
-                                }
-                                else{
+                                salirCliente(i,&readfds,&numClientes,arrayClientes);
+                            }
+                            else{
                                     
-                                    // %.240s: Esto asegura que, como máximo, se copiarán 240 caracteres de 
-                                    // buffer (dejando espacio para los demás elementos del formato 
-                                    // como <%d>: y el terminador nulo \0).
-                                    snprintf(identificador, sizeof(identificador), "<%d>: %.240s", i, buffer);
-                                    // sprintf(identificador,"<%d>: %s",i,buffer);
+                                // %.240s: Esto asegura que, como máximo, se copiarán 240 caracteres de 
+                                // buffer (dejando espacio para los demás elementos del formato 
+                                // como <%d>: y el terminador nulo \0).
+                                snprintf(identificador, sizeof(identificador), "<%d>: %.240s", i, buffer);
+                                // sprintf(identificador,"<%d>: %s",i,buffer);
                                     
-                                    bzero(buffer,sizeof(buffer));
+                                bzero(buffer,sizeof(buffer));
 
-                                    strcpy(buffer,identificador);
+                                strcpy(buffer,identificador);
 
-                                    printf("%s\n", buffer);
+                                printf("%s\n", buffer);
 
-                                    for(j=0; j<numClientes; j++){
-                                        if(arrayClientes[j] != i){
-                                            send(arrayClientes[j],buffer,sizeof(buffer),0);
-                                        }
+                                for(j=0; j<numClientes; j++){
+                                    if(arrayClientes[j] != i){
+                                        send(arrayClientes[j],buffer,sizeof(buffer),0);
                                     }
                                 }
                             }
+                        }
                             //Si el cliente introdujo ctrl+c
                             if(recibidos== 0){
                                 
                                 printf("El socket %d, ha introducido ctrl+c\n", i);
-                                //Eliminar ese socket
                                 salirCliente(i,&readfds,&numClientes,arrayClientes);
                             }
-                        }
+                    }
                     }
                 }
             }

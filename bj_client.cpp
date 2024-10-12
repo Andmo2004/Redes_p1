@@ -72,8 +72,8 @@ int main ( )
 		// Enviar un mensaje al servidor
 		if (send(descrip, buffer, sizeof(buffer), 0) == -1) {
         		perror("Error al enviar el mensaje");
-       			 exit(1);
-   		 }
+       			exit(1);
+   		}
 
 		// Recibir respuesta del servidor
    		bzero(buffer, sizeof(buffer));
@@ -82,9 +82,7 @@ int main ( )
         		exit(1);
     		}
 
-    		printf("Respuesta del servidor: %s\n", buffer);
-
-				
+    	printf("Respuesta del servidor: %s\n", buffer);			
 	}while(!salir);
 	
 	// Cerrar el socket del cliente	

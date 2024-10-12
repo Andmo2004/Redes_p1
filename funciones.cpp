@@ -16,7 +16,7 @@ void rellenarFicheroUsuario(const map<string, string> &userData){
     fich.open("Users_Passwords.txt");
 
     for (const auto &entry : userData) {
-        fich << entry.first << "\t" << entry.second << endl; // entry.first es el username y entry.second es el password
+        fich << entry.first << "\t" << entry.second; // entry.first es el username y entry.second es el password
     }
     
     fich.close();
@@ -75,6 +75,7 @@ bool updateUserData(const string &username, const string &password, map<string, 
     } else {
         // Si el usuario no existe, lo agregamos al mapa
         userData[username] = password;
+        rellenarFicheroUsuario(userData);
         return true; 
     }   
 }
