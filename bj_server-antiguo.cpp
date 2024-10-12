@@ -1,8 +1,4 @@
-// C++ libraries
 #include <iostream>
-#include <map>
-
-// C libraries
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -14,20 +10,26 @@
 #include <unistd.h>
 #include <time.h>
 #include <arpa/inet.h>
-
-// nuestras librerias
+#include <funciones.hpp>
 #include "bj_server.h"
-#include "funciones.hpp"
 
 #define MSG_SIZE 250
 #define MAX_CLIENTS 30
 
-using namespace std;
+
+/***** hola miguel angel ****** */
+
+/*
+ * El servidor ofrece el servicio de un chat rico
+ me gusta el sexo cabron
+ */
+
+void manejador(int signum);
+void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]);
+
 
 int main (){
   
-    std::map<string, string> userData;
-    rellenarVectorUsuario(userData);
 	/*---------------------------------------------------- 
 		Descriptor del socket y buffer de datos                
 	-----------------------------------------------------*/
@@ -179,80 +181,86 @@ int main (){
                             //Mensajes que se quieran mandar a los clientes (implementar)   
                         } 
                         else{
-                            char username[50], password[50], temp[50];
-
+                            int num=0,num2=0;
                             bzero(buffer,sizeof(buffer));
                             recibidos = recv(i,buffer,sizeof(buffer),0);
                             
-                            if(recibidos > 0)
-                            {
-                                /*+++++++++++++++++++++++++++++++ INICIO DE SESION +++++++++++++++++++++++++++++++*/
+                            if(recibidos > 0){
 
-                                if(buscar_palabra(buffer, "USUARIO")){
+                                if(sscanf(buffer,"USUARIO %d",&num)!=1){
 
-                                    // comprobamos que haya introducido un nombre de usuario
-                                    if (sscanf(buffer, "%s %s", temp, username) == 2){
-                                        if(!existe_usuario(std::string(username), userData)){
-                                            send_to_user(i, buffer, sizeof(buffer), "-Err. Nombre de usuario no existente \n");
-                                            salirCliente(i,&readfds,&numClientes,arrayClientes);
+                                    send_to_user(i, buffer, sizeof(buffer), "-Err. Usuario incorrecto\n");
+                                    // bzero(buffer,sizeof(buffer));
+                                    // strcpy(buffer, "-Err. Usuario incorrecto\n");
+                                    // send(i,buffer,sizeof(buffer),0);
+                                }
+                                else{
+                                    
+                                    if(num==i){
 
-                                        } else {
-                                            int k=0;
-                                            while(k<3){
-                                                send_to_user(i, buffer, sizeof(buffer), " >> Introduzca su contrasenia: PASSWORD password \n");
-                                                bzero(buffer, sizeof(buffer));
-                                                recv(i, buffer, sizeof(buffer), 0);
-                                                
-                                                if(buscar_palabra(buffer, "PASSWORD")){
-                                                    if (sscanf(buffer, "%s %s", temp, password) == 2){
-                                                        if(!contrasenia_correcta(std::string(username), std::string(password), userData)){
-                                                            send_to_user(i, buffer, sizeof(buffer), "Contrasenia incorrecta tienes 3 intentos \n");
-                                                            k++;
-                                                            if(k == 3){
-                                                                send_to_user(i, buffer, sizeof(buffer), "-Err. Has metido la contrasenia 3 veces mal \n");
-                                                                salirCliente(i,&readfds,&numClientes,arrayClientes);
-                                                            }
+                                        send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario correcto\n");
+                                        // bzero(buffer,sizeof(buffer));
+                                        // strcpy(buffer, "+Ok. Usuario correcto\n");
+                                        // send(i,buffer,sizeof(buffer),0);
 
-                                                        } else {
-                                                            send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario validado\n");
-                                                            break;
-                                                        }
+                                        bzero(buffer,sizeof(buffer));
+                                        recibidos = recv(i,buffer,sizeof(buffer),0);
+
+                                        if(recibidos>0){
+
+                                            if(sscanf(buffer,"PASSWORD %d",&num2)!=1){
+
+                                                send_to_user(i, buffer, sizeof(buffer), "-Err. Error en la validación\n");
+                                                // bzero(buffer,sizeof(buffer));
+                                                // strcpy(buffer, "-Err. Error en la validación\n");
+                                                // send(i,buffer,sizeof(buffer),0);
+                                            }
+                                            else{
+
+                                                if(num2==i){
+                                                    
+                                                    send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario validado\n");
+                                                    // bzero(buffer,sizeof(buffer));
+                                                    // strcpy(buffer, "+Ok. Usuario validado\n");
+                                                    // send(i,buffer,sizeof(buffer),0);
+
+                                                    bzero(buffer,sizeof(buffer));
+                                                    recibidos = recv(i,buffer,sizeof(buffer),0);
+                                                    //seguir con el flujo
+                                                    if(recibidos>0){
+
                                                     }
+                                                }
+                                                else{
+                                                    send_to_user(i, buffer, sizeof(buffer), "-Err. Error en la validación\n");
+                                                    // bzero(buffer,sizeof(buffer));
+                                                    // strcpy(buffer, "-Err. Error en la validación\n");
+                                                    // send(i,buffer,sizeof(buffer),0);
                                                 }
                                             }
                                         }
-
-
-                                    } else {
-                                        send_to_user(i, buffer, sizeof(buffer), "-Err. Nombre de usuario no introducido \n");
-                                        salirCliente(i,&readfds,&numClientes,arrayClientes);
                                     }
-                                
-                                /*+++++++++++++++++++++++++++++++ REGISTRO +++++++++++++++++++++++++++++++*/
-                                
-                                } if (buscar_palabra(buffer, "REGISTRO")) {
-                                    if(sscanf(buffer,"REGISTRO -u %s -p %s",username,password)==2){
-                                        if(updateUserData(std::string(username), std::string(password), userData)){
-                                            send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario registrado correctamente, sal e inicia sesion\n");
-                                            salirCliente(i,&readfds,&numClientes,arrayClientes);
-                                        } else {
-                                            send_to_user(i, buffer, sizeof(buffer), "-Err. El usuario ya esta registrado\n");
-                                            salirCliente(i,&readfds,&numClientes,arrayClientes);
-                                        }
-                                    } else {
-                                        send_to_user(i, buffer, sizeof(buffer), "-Err. La informacion no se ha introducido correctamente\n");
-                                        salirCliente(i,&readfds,&numClientes,arrayClientes);
+                                    else{
+                                        
+                                        send_to_user(i, buffer, sizeof(buffer), "-Err. Usuario incorrecto\n");
+                                        // bzero(buffer,sizeof(buffer));
+                                        // strcpy(buffer, "-Err. Usuario incorrecto\n");
+                                        // send(i,buffer,sizeof(buffer),0);
                                     }
-                                } if (buscar_palabra(buffer, "SALIR")) {
-                                    salirCliente(i,&readfds,&numClientes,arrayClientes); 
-                                } else {
-                                    send_to_user(i, buffer, sizeof(buffer), "-Err. El usuario ya esta registrado\n");
+
                                 }
-                                
-                                /*
-                                    INICIAR PARTIDA
-                                */
-                            }
+
+                                if(sscanf(buffer,"REGISTRO -u %d -p %d",&num,&num2)!=2){
+
+                                    send_to_user(i, buffer, sizeof(buffer), "-Err. Error en registro\n");
+                                    // bzero(buffer,sizeof(buffer));
+                                    // strcpy(buffer, "-Err. Error en registro\n");
+                                    // send(i,buffer,sizeof(buffer),0);
+                                }
+                                else{
+                                    //comprobación si el user existe ya?
+
+                                }
                                 
                                 //final
                                 if(strcmp(buffer,"SALIR\n") == 0){
@@ -291,11 +299,12 @@ int main (){
                     }
                 }
             }
-		
+		}
+
 	close(sd);
 	return 0;
+	
 }
-
 
 void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]){
   
@@ -335,4 +344,10 @@ void send_to_user(int i, char *buffer, size_t buffer_size, const char *msg)
     bzero(buffer, buffer_size);  // Podemos usar memset(buffer, 0, buffer_size); en lugar de bzero
     strncpy(buffer, msg, buffer_size - 1);  // buffer size-1 Asegurarse de no desbordar el buffer
     send(i, buffer, strlen(buffer), 0); 
+};
+
+bool buscar_palabra(const char *cadena, const char *palabra) 
+{
+    if (strstr(cadena, palabra) != NULL) {return true;}
+    return false;
 };
