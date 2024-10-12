@@ -335,12 +335,28 @@ void manejador (int signum){
     signal(SIGINT,manejador);
     
     //Implementar lo que se desee realizar cuando ocurra la excepción de ctrl+c en el servidor
-}
-
+};
 
 void send_to_user(int i, char *buffer, size_t buffer_size, const char *msg)
 {
     bzero(buffer, buffer_size);  // Podemos usar memset(buffer, 0, buffer_size); en lugar de bzero
     strncpy(buffer, msg, buffer_size - 1);  // buffer size-1 Asegurarse de no desbordar el buffer
     send(i, buffer, strlen(buffer), 0); 
-}
+};
+
+bool buscar_palabra(const char *cadena, const char *palabra) 
+{
+    if (strstr(cadena, palabra) != NULL) {return true;}
+    return false;
+};
+
+bool existe_usuario(const char* usuario, const char** arrayClientes, size_t numClientes)
+{
+    for(size_t i=0; i < numClientes; ++i)
+    {
+        if(strcmp(usuario, arrayClientes[i])){
+            return true;
+        }
+    }
+    return false;
+};
