@@ -51,13 +51,12 @@ typedef struct{
 
 
 
-
-
 int main (){
-    Usuario usuario[30];
+
+    vector<Usuario>usuario[MAX_CLIENTS];
     vector<Carta> baraja1;
-    Mesa mesa;
-    std::map<string, string> userData;
+    vector<Mesa> mesa[10];
+    map<string, string> userData;
     rellenarVectorUsuario(userData);
 	/*---------------------------------------------------- 
 		Descriptor del socket y buffer de datos                
@@ -161,10 +160,12 @@ int main (){
 
                                 if(numClientes < MAX_CLIENTS){
                                     arrayClientes[numClientes] = new_sd;
-                                    numClientes++;
                                     FD_SET(new_sd,&readfds);
 
                                     send_to_user(new_sd, buffer, sizeof(buffer), "+Ok. Usuario conectado\n");
+                                    usuario[numClientes].estado=0 ;
+                                    numClientes++;
+                                    
 									
                                     for(j=0; j<(numClientes-1);j++){
                                     
