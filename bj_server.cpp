@@ -38,8 +38,25 @@ typedef struct{
 
 } Usuario;
 
+typedef struct{
+    string palo;
+    int numero;
+}Carta;
+
+typedef struct{
+    int estadoPartida;
+    vector<int> jugador;
+    vector<Carta> baraja;
+} Mesa;
+
+
+
+
+
 int main (){
     Usuario usuario[30];
+    vector<Carta> baraja1;
+    Mesa mesa;
     std::map<string, string> userData;
     rellenarVectorUsuario(userData);
 	/*---------------------------------------------------- 
@@ -113,7 +130,7 @@ int main (){
     
    	
     //Capturamos la señal SIGINT (Ctrl+c)
-	signal(SIGINT,manejador);
+	signal(SIGINT, manejador);
     
 	/*-----------------------------------------------------------------------
 		El servidor acepta una petición
@@ -173,9 +190,7 @@ int main (){
                                 for (j = 0; j < numClientes; j++){
 
                                     send_to_user(arrayClientes[j], buffer, sizeof(buffer), "+Ok. Desconexión servidor\n");
-                                    // bzero(buffer, sizeof(buffer));
-                                    // strcpy(buffer,"+Ok. Desconexión servidor\n"); 
-                                    // send(arrayClientes[j],buffer , sizeof(buffer),0);
+
                                     close(arrayClientes[j]);
                                     FD_CLR(arrayClientes[j],&readfds);
                                 }
