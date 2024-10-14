@@ -24,8 +24,22 @@
 
 using namespace std;
 
+typedef struct{
+        /*
+            Estado 0 = conectado
+            Estado 1 = Usuario correcto
+            Estado 2 = Usuario validado
+            Estado 3 = Iniciar partida
+            Estado 4 = Jugando
+        */ 
+    int estado; 
+    string username;
+    string password;
+
+} Usuario;
+
 int main (){
-  
+    Usuario usuario[30];
     std::map<string, string> userData;
     rellenarVectorUsuario(userData);
 	/*---------------------------------------------------- 
