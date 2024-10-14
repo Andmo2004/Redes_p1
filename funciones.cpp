@@ -79,3 +79,25 @@ bool updateUserData(const string &username, const string &password, map<string, 
         return true; 
     }   
 }
+
+
+
+void rellenarBaraja(vector<Carta> &baraja)
+{
+    // Puedes usar un array de strings para los palos
+    string palos[] = {"Corazones", "Treboles", "Picas", "Diamantes"};
+    
+    // Reservar el tamaño necesario (4 palos x 13 cartas)
+    baraja.reserve(52); 
+    
+    for(int i = 0; i < 4; i++) {  // Para los 4 palos
+        for(int j = 0; j < 13; j++) {  // Para las 13 cartas de cada palo
+            Carta nuevaCarta;
+            nuevaCarta.numero = j + 1;   // Número de la carta
+            nuevaCarta.palo = palos[i];  // Asignar palo
+            
+            // Agregar la carta al vector
+            baraja.push_back(nuevaCarta);
+        }
+    }
+}
