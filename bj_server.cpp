@@ -138,10 +138,7 @@ int main (){
                                     FD_SET(new_sd,&readfds);
 
                                     send_to_user(new_sd, buffer, sizeof(buffer), "+Ok. Usuario conectado\n");
-                                    
-
                                     usuarios[numClientes].estado = 0;
-                                    
                                     numClientes++;
                                     
 									
@@ -198,6 +195,8 @@ int main (){
                                             salirCliente(i,&readfds,&numClientes,arrayClientes);
                                         } 
                                         else {
+                                            send_to_user(i,buffer,sizeof(buffer), "-Ok. Usuario correcto\n");
+                                            
                                             int k=0;
                                             while(k<3){
                                                 send_to_user(i, buffer, sizeof(buffer), " >> Introduzca su contrasenia: PASSWORD password \n");
