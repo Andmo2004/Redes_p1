@@ -16,7 +16,7 @@
 #include <arpa/inet.h>
 
 // nuestras librerias
-#include "bj_server.h"
+#include "bj_server.hpp"
 #include "funciones.hpp"
 
 #define MSG_SIZE 250
@@ -24,38 +24,13 @@
 
 using namespace std;
 
-typedef struct{
-        /*
-            Estado 0 = conectado
-            Estado 1 = Usuario correcto
-            Estado 2 = Usuario validado
-            Estado 3 = Iniciar partida
-            Estado 4 = Jugando
-        */ 
-    int estado; 
-    string username;
-    string password;
-
-} Usuario;
-
-typedef struct{
-    string palo;
-    int numero;
-}Carta;
-
-typedef struct{
-    int estadoPartida;
-    vector<int> jugador;
-    vector<Carta> baraja;
-} Mesa;
-
-
-
 int main (){
 
-    vector<Usuario>usuario[MAX_CLIENTS];
+    vector<Usuario> usuarios;
+    usuarios.resize(MAX_CLIENTS);
     vector<Carta> baraja1;
-    vector<Mesa> mesa[10];
+    vector<Mesa> mesas;
+    mesas.resize(10);
     map<string, string> userData;
     rellenarVectorUsuario(userData);
 	/*---------------------------------------------------- 
@@ -163,7 +138,10 @@ int main (){
                                     FD_SET(new_sd,&readfds);
 
                                     send_to_user(new_sd, buffer, sizeof(buffer), "+Ok. Usuario conectado\n");
-                                    usuario[numClientes].estado=0 ;
+                                    
+
+                                    usuarios[numClientes].estado = 0;
+                                    
                                     numClientes++;
                                     
 									
