@@ -23,6 +23,7 @@ struct Usuario{
     int estado; 
     string username;
     string password;
+    int id;
 };
 
 struct Carta{

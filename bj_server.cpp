@@ -139,6 +139,7 @@ int main (){
 
                                     send_to_user(new_sd, buffer, sizeof(buffer), "+Ok. Usuario conectado\n");
                                     usuarios[numClientes].estado = 0;
+                                    usuarios[numClientes].id=new_sd;
                                     numClientes++;
                                     
 									
@@ -188,7 +189,7 @@ int main (){
                                 if(buscar_palabra(buffer, "USUARIO")){
 
                                     // comprobamos que haya introducido un nombre de usuario
-                                    if (sscanf(buffer, "%s %s", temp, username) == 2){
+                                    if ((sscanf(buffer, "%s %s", temp, username) == 2)){
                                         if(!existe_usuario(string(username), userData)){
                                             
                                             send_to_user(i, buffer, sizeof(buffer), "-Err. Nombre de usuario no existente \n");
@@ -196,7 +197,11 @@ int main (){
                                         } 
                                         else {
                                             send_to_user(i,buffer,sizeof(buffer), "-Ok. Usuario correcto\n");
-                                            
+                                            for(int w=0;w<usuarios.size();w++){
+                                                if(usuarios[w].id==i){
+                                                    usuarios[w].estado=1;
+                                                }
+                                            }
                                             int k=0;
                                             while(k<3){
                                                 send_to_user(i, buffer, sizeof(buffer), " >> Introduzca su contrasenia: PASSWORD password \n");
@@ -219,15 +224,36 @@ int main (){
                                                             else {
 
                                                                 send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario validado\n");
+                                                                for(int w=0;w<usuarios.size();w++){
+                                                                    if(usuarios[w].id==i){
+                                                                        usuarios[w].estado=2;
+                                                                    }
+                                                                }
                                                 /*++++++++++++++++++++++++++++INICIAR PARTIDA++++++++++++++++++++++++++++++++*/
                                                                 bzero(buffer, sizeof(buffer));
                                                                 int recibido2=recv(i,buffer,sizeof(buffer),0);
                                                                 if(recibido2>0){
 
                                                                     if(buscar_palabra(buffer,"INICIAR-PARTIDA")){
+                                                                        int counter=0;
+                                                                        for(int w=0;w<usuarios.size();w++){
+                                                                            if(usuarios[w].id==i){
+                                                                                usuarios[w].estado=3;
+                                                                            }
+                                                                        }
+                                                                        for(int w=0;w<usuarios.size();w++){
+                                                                            if(usuarios[w].estado==3){
+                                                                                counter++;
+                                                                                if(counter==2){
+                                                                                    counter=0;
+                                                                                    
+                                                                                }
+                                                                                else{
 
-                                                                        send_to_user(i, buffer, sizeof(buffer), "+Ok. Esperando a otro jugador...\n");
-                                                                        
+                                                                                    send_to_user(usuarios[w].id, buffer, sizeof(buffer), "+Ok. Esperando a otro jugador...\n");
+                                                                                }
+                                                                            }
+                                                                        }   
                                                                     }
                                                                 }
                                                 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -247,8 +273,14 @@ int main (){
                                 
                                 else if(buscar_palabra(buffer, "REGISTRO")) {
                                     if(sscanf(buffer,"REGISTRO -u %s -p %s",username,password)==2){
-                                        if(updateUserData(std::string(username), std::string(password), userData)){
+                                        if(updateUserData(string(username), string(password), userData)){
                                             send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario registrado correctamente, sal e inicia sesion\n");
+                                            for(int w=0;w<usuarios.size();w++){
+                                                if(usuarios[w].id==i){
+                                                    usuarios[w].username=username;
+                                                    usuarios[w].password=password;
+                                                }
+                                            }
                                             salirCliente(i,&readfds,&numClientes,arrayClientes);
                                         } 
                                         else {
