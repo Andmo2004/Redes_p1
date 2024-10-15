@@ -6,6 +6,7 @@
 #include <map>
 
 #include "funciones.hpp"
+#include "bj_server.hpp"
 
 using namespace std;
 
@@ -101,3 +102,9 @@ void rellenarBaraja(vector<Carta> &baraja)
         }
     }
 }
+
+
+int obtenerEstado(vector<Usuario> &usuarios, int i)
+{
+    return usuarios[i].estado;
+};

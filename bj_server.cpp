@@ -44,7 +44,7 @@ int main (){
    	int salida;
    	int arrayClientes[MAX_CLIENTS];
     int numClientes = 0;
-
+    string temporal;
    	//contadores
     int i,j,k;
 	int recibidos;
@@ -109,235 +109,190 @@ int main (){
 	/*-----------------------------------------------------------------------
 		El servidor acepta una petición
 	------------------------------------------------------------------------ */
-	while(1){
-            
-            //Esperamos recibir mensajes de los clientes (nuevas conexiones o mensajes de los clientes ya conectados)
-            
-            auxfds = readfds;
-            
-            salida = select(FD_SETSIZE,&auxfds,NULL,NULL,NULL);
-            
-            if(salida > 0){
-                
-                
-                for(i=0; i<FD_SETSIZE; i++){
-                    
-                    //Buscamos el socket por el que se ha establecido la comunicación
-                    if(FD_ISSET(i, &auxfds)) {
-                        
-                        if( i == sd){
+	while(1) {
+    // Esperamos recibir mensajes de los clientes (nuevas conexiones o mensajes de los clientes ya conectados)
+    auxfds = readfds;
+    salida = select(FD_SETSIZE, &auxfds, NULL, NULL, NULL);
+
+    if(salida > 0) {
+        for(i = 0; i < FD_SETSIZE; i++) {
+            // Buscamos el socket por el que se ha establecido la comunicación
+            if(FD_ISSET(i, &auxfds)) {
+
+                if(i == sd) { // Nueva conexión
+                    if((new_sd = accept(sd, (struct sockaddr *)&from, &from_len)) == -1) {
+                        perror("-Err. Error aceptando peticiones");
+                    } else {
+                        if(numClientes < MAX_CLIENTS) {
+                            arrayClientes[numClientes] = new_sd;
+                            FD_SET(new_sd, &readfds);
+                            send_to_user(new_sd, buffer, sizeof(buffer), "+Ok. Usuario conectado\n");
+                            usuarios[numClientes].estado = 0;
+                            usuarios[numClientes].id = new_sd;
+                            numClientes++;
                             
-                            if((new_sd = accept(sd, (struct sockaddr *)&from, &from_len)) == -1){
-                                perror("-Err.Error aceptando peticiones");
-                            }
-
-                            else{
-
-                                if(numClientes < MAX_CLIENTS){
-                                    arrayClientes[numClientes] = new_sd;
-                                    FD_SET(new_sd,&readfds);
-
-                                    send_to_user(new_sd, buffer, sizeof(buffer), "+Ok. Usuario conectado\n");
-                                    usuarios[numClientes].estado = 0;
-                                    usuarios[numClientes].id=new_sd;
-                                    numClientes++;
-                                    
-									
-                                    for(j=0; j<(numClientes-1);j++){
-                                    
-                                        sprintf(buffer, "+Ok. Nuevo Cliente conectado en <%d>",new_sd);
-                                        send_to_user(arrayClientes[j], buffer, sizeof(buffer), buffer);
-                                    }
-                                }
-                                else
-                                {
-                                    send_to_user(new_sd, buffer, sizeof(buffer), "-Err. Demasiados clientes conectados\n");
-                                    close(new_sd);
-                                } 
-                            }
+                            // for(j = 0; j < (numClientes - 1); j++) {
+                            //     sprintf(buffer, "+Ok. Nuevo Cliente conectado en <%d>", new_sd);
+                            //     send_to_user(arrayClientes[j], buffer, sizeof(buffer), buffer);
+                            // }
+                        } else {
+                            send_to_user(new_sd, buffer, sizeof(buffer), "-Err. Demasiados clientes conectados\n");
+                            close(new_sd);
                         }
-                        else if (i == 0){
-                            //Se ha introducido información de teclado
-                            bzero(buffer, sizeof(buffer));
-                            fgets(buffer, sizeof(buffer),stdin);
-                            
-                            //Controlar si se ha introducido "SALIR", cerrando todos los sockets y finalmente saliendo del servidor. (implementar)
-                            if(strcmp(buffer,"SALIR\n") == 0){
-                             
-                                for (j = 0; j < numClientes; j++){
-
-                                    send_to_user(arrayClientes[j], buffer, sizeof(buffer), "+Ok. Desconexión servidor\n");
-
-                                    close(arrayClientes[j]);
-                                    FD_CLR(arrayClientes[j],&readfds);
-                                }
-                                close(sd);
-                                exit(-1);     
-                            }
-                            //Mensajes que se quieran mandar a los clientes (implementar)   
-                        } 
-                        else{
-                            char username[50], password[50], temp[50];
-
-                            bzero(buffer,sizeof(buffer));
-                            recibidos = recv(i,buffer,sizeof(buffer),0);
-                            
-                            if(recibidos > 0)
-                            {
-                                /*+++++++++++++++++++++++++++++++ INICIO DE SESION +++++++++++++++++++++++++++++++*/
-
-                                if(buscar_palabra(buffer, "USUARIO")){
-
-                                    // comprobamos que haya introducido un nombre de usuario
-                                    if ((sscanf(buffer, "%s %s", temp, username) == 2)){
-                                        if(!existe_usuario(string(username), userData)){
-                                            
-                                            send_to_user(i, buffer, sizeof(buffer), "-Err. Nombre de usuario no existente \n");
-                                            salirCliente(i,&readfds,&numClientes,arrayClientes);
-                                        } 
-                                        else {
-                                            send_to_user(i,buffer,sizeof(buffer), "-Ok. Usuario correcto\n");
-                                            for(int w=0;w<usuarios.size();w++){
-                                                if(usuarios[w].id==i){
-                                                    usuarios[w].estado=1;
-                                                }
-                                            }
-                                            int k=0;
-                                            while(k<3){
-                                                send_to_user(i, buffer, sizeof(buffer), " >> Introduzca su contrasenia: PASSWORD password \n");
-                                                bzero(buffer, sizeof(buffer));
-                                                int recibido=recv(i, buffer, sizeof(buffer), 0);
-                                                if(recibido>0){
-
-                                                    if(buscar_palabra(buffer, "PASSWORD")){
-
-                                                        if (sscanf(buffer, "%s %s", temp, password) == 2){
-                                                            if(!contrasenia_correcta(string(username), string(password), userData)){
-                                                                send_to_user(i, buffer, sizeof(buffer), "-Err. Contrasenia incorrecta tienes 3 intentos \n");
-                                                                k++;
-                                                                if(k == 3){
-                                                                    send_to_user(i, buffer, sizeof(buffer), "-Err. Has metido la contrasenia 3 veces mal \n");
-                                                                    salirCliente(i,&readfds,&numClientes,arrayClientes);
-                                                                }
-
-                                                            } 
-                                                            else {
-
-                                                                send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario validado\n");
-                                                                for(int w=0;w<usuarios.size();w++){
-                                                                    if(usuarios[w].id==i){
-                                                                        usuarios[w].estado=2;
-                                                                    }
-                                                                }
-                                                /*++++++++++++++++++++++++++++INICIAR PARTIDA++++++++++++++++++++++++++++++++*/
-                                                                bzero(buffer, sizeof(buffer));
-                                                                int recibido2=recv(i,buffer,sizeof(buffer),0);
-                                                                if(recibido2>0){
-
-                                                                    if(buscar_palabra(buffer,"INICIAR-PARTIDA")){
-                                                                        int counter=0;
-                                                                        for(int w=0;w<usuarios.size();w++){
-                                                                            if(usuarios[w].id==i){
-                                                                                usuarios[w].estado=3;
-                                                                            }
-                                                                        }
-                                                                        for(int w=0;w<usuarios.size();w++){
-                                                                            if(usuarios[w].estado==3){
-                                                                                counter++;
-                                                                                if(counter==2){
-                                                                                    counter=0;
-                                                                                    
-                                                                                }
-                                                                                else{
-
-                                                                                    send_to_user(usuarios[w].id, buffer, sizeof(buffer), "+Ok. Esperando a otro jugador...\n");
-                                                                                }
-                                                                            }
-                                                                        }   
-                                                                    }
-                                                                }
-                                                /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } 
-                                    else {
-                                        send_to_user(i, buffer, sizeof(buffer), "-Err. Nombre de usuario no introducido \n");
-                                        salirCliente(i,&readfds,&numClientes,arrayClientes);
-                                    }
-                                } 
-                                /*+++++++++++++++++++++++++++++++ REGISTRO +++++++++++++++++++++++++++++++*/
-                                
-                                else if(buscar_palabra(buffer, "REGISTRO")) {
-                                    if(sscanf(buffer,"REGISTRO -u %s -p %s",username,password)==2){
-                                        if(updateUserData(string(username), string(password), userData)){
-                                            send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario registrado correctamente, sal e inicia sesion\n");
-                                            for(int w=0;w<usuarios.size();w++){
-                                                if(usuarios[w].id==i){
-                                                    usuarios[w].username=username;
-                                                    usuarios[w].password=password;
-                                                }
-                                            }
-                                            salirCliente(i,&readfds,&numClientes,arrayClientes);
-                                        } 
-                                        else {
-                                            send_to_user(i, buffer, sizeof(buffer), "-Err. El usuario ya esta registrado\n");
-                                            salirCliente(i,&readfds,&numClientes,arrayClientes);
-                                        }
-                                    } 
-                                    else {
-                                        send_to_user(i, buffer, sizeof(buffer), "-Err. La informacion no se ha introducido correctamente\n");
-                                        salirCliente(i,&readfds,&numClientes,arrayClientes);
-                                    }
-                                }
-                                /*++++++++++++++SALIR+++++++++++++++++++++++++++++++*/
-                                else if(buscar_palabra(buffer, "SALIR")) {
-                                    salirCliente(i,&readfds,&numClientes,arrayClientes); 
-                                } 
-                            }
-                                
-                            if(strcmp(buffer,"SALIR\n") == 0){
-                                    
-                                salirCliente(i,&readfds,&numClientes,arrayClientes);
-                            }
-                            else{
-                                    
-                                // %.240s: Esto asegura que, como máximo, se copiarán 240 caracteres de 
-                                // buffer (dejando espacio para los demás elementos del formato 
-                                // como <%d>: y el terminador nulo \0).
-                                snprintf(identificador, sizeof(identificador), "<%d>: %.240s", i, buffer);
-                                // sprintf(identificador,"<%d>: %s",i,buffer);
-                                    
-                                bzero(buffer,sizeof(buffer));
-
-                                strcpy(buffer,identificador);
-
-                                printf("%s\n", buffer);
-
-                                for(j=0; j<numClientes; j++){
-                                    if(arrayClientes[j] != i){
-                                        send(arrayClientes[j],buffer,sizeof(buffer),0);
-                                    }
-                                }
-                            }
-                        }
-                            //Si el cliente introdujo ctrl+c
-                            if(recibidos== 0){
-                                
-                                printf("El socket %d, ha introducido ctrl+c\n", i);
-                                salirCliente(i,&readfds,&numClientes,arrayClientes);
-                            }
                     }
+                } else if (i == 0) { // Información de teclado
+                    bzero(buffer, sizeof(buffer));
+                    fgets(buffer, sizeof(buffer), stdin);
+                    
+                    if(strcmp(buffer, "SALIR\n") == 0) {
+                        for(j = 0; j < numClientes; j++) {
+                            send_to_user(arrayClientes[j], buffer, sizeof(buffer), "+Ok. Desconexión servidor\n");
+                            close(arrayClientes[j]);
+                            FD_CLR(arrayClientes[j], &readfds);
+                        }
+                        close(sd);
+                        exit(-1);
+                    }
+                    // Implementar envío de mensajes a los clientes
+                } else { // Manejo de clientes conectados
+                    bzero(buffer, sizeof(buffer));
+                    recibidos = recv(i, buffer, sizeof(buffer), 0);
+                    
+                    if(recibidos > 0) {
+
+                        /* Registro */
+                        if(buscar_palabra(buffer, "REGISTRO")) {
+                            if(usuarios[i].estado == CONECTADO){
+                                char username[50], password[50];
+                                if(sscanf(buffer, "REGISTRO -u %s -p %s", username, password) == 2) {
+                                    if(updateUserData(string(username), string(password), userData)) {
+                                        send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario registrado correctamente, sal e inicia sesion\n");
+                                        for(int w = 0; w < usuarios.size(); w++) {
+                                            if(usuarios[w].id == i) {
+                                                usuarios[w].username = string(username);
+                                                usuarios[w].password = string(password);
+                                            }
+                                        }
+                                        salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                    } else {
+                                        send_to_user(i, buffer, sizeof(buffer), "-Err. El usuario ya esta registrado\n");
+                                        salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                    }
+                                } else {
+                                    send_to_user(i, buffer, sizeof(buffer), "-Err. La informacion no se ha introducido correctamente\n");
+                                    salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                }
+                            } else {
+                                 send_to_user(i, buffer, sizeof(buffer), "-Err. El estado del usuario no corresponde al Registro\n");
+                            }
+                        }
+
+                        /* Inicio de sesión */
+                        if(buscar_palabra(buffer, "USUARIO")) {
+                            if(usuarios[i].estado==CONECTADO)
+                            {
+                                char temp[50], username[50];
+                                if(sscanf(buffer, "%s %s", temp, username) == 2) {
+                                    if(!existe_usuario(string(username), userData)) {
+                                        send_to_user(i, buffer, sizeof(buffer), "-Err. Nombre de usuario no existente \n");
+                                        salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                    } else {
+                                        send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario correcto\n");
+                                        for(int w = 0; w < usuarios.size(); w++) {
+                                            if(usuarios[w].id == i) {
+                                                usuarios[w].estado = 1;
+                                            }
+                                        }
+                                    }
+                                }
+                                temporal = string(username); 
+                            } else {
+                                send_to_user(i, buffer, sizeof(buffer), "-Err. El estado del usuario no corresponde al Inicio de Sesion\n");
+                            }
+                        }
+
+                        if(buscar_palabra(buffer, "PASSWORD")) {
+                            if(usuarios[i].estado==USUARIO_CORRECTO){
+                                string temp, password;
+                                cout << "error1" << endl;
+                                if(sscanf(buffer, "%s %s", temp, password) == 2) {
+                                    cout << "error2" << endl;
+                                    if(!contrasenia_correcta(string(temporal), string(password), userData)) {
+                                        send_to_user(i, buffer, sizeof(buffer), "-Err. Contrasenia incorrecta\n");
+                                    } else {
+                                        send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario validado\n");
+                                        for(int w = 0; w < usuarios.size(); w++) {
+                                            if(usuarios[w].id == i) {
+                                                usuarios[w].estado = 2;
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                send_to_user(i, buffer, sizeof(buffer), "-Err. El estado del usuario no corresponde a Correcto\n");
+                            }
+                        }
+
+                        /* Iniciar partida */
+                        if(buscar_palabra(buffer, "INICIAR-PARTIDA")) {
+                            if(usuarios[i].estado == USUARIO_VALIDADO){
+                                int counter = 0;
+                                for(int w = 0; w < usuarios.size(); w++) {
+                                    if(usuarios[w].id == i) {
+                                        usuarios[w].estado = 3;
+                                    }
+                                }
+                                for(int w = 0; w < usuarios.size(); w++) {
+                                    if(usuarios[w].estado == 3) {
+                                        counter++;
+                                        if(counter == 2) {
+                                            counter = 0;
+                                        } else {
+                                            send_to_user(usuarios[w].id, buffer, sizeof(buffer), "+Ok. Esperando a otro jugador...\n");
+                                        }
+                                    }
+                                }
+                            } else {
+                                send_to_user(i, buffer, sizeof(buffer), "-Err. El estado del usuario no corresponde a Validacion\n");
+                            }
+                        }
+
+                        /* Salir */
+                        if(buscar_palabra(buffer, "SALIR")) {
+                            salirCliente(i, &readfds, &numClientes, arrayClientes);
+                        }
+                    }
+
+                    if(strcmp(buffer, "SALIR\n") == 0) {
+                        salirCliente(i, &readfds, &numClientes, arrayClientes);
+                    } else {
+                        snprintf(identificador, sizeof(identificador), "<%d>: %.240s", i, buffer);
+                        bzero(buffer, sizeof(buffer));
+                        strcpy(buffer, identificador);
+                        printf("%s\n", buffer);
+
+                        for(j = 0; j < numClientes; j++) {
+                            if(arrayClientes[j] != i) {
+                                send(arrayClientes[j], buffer, sizeof(buffer), 0);
+                            }
+                        }
+                    }
+
+                    // Si el cliente introdujo ctrl+c
+                    if(recibidos == 0) {
+                        printf("El socket %d, ha introducido ctrl+c\n", i);
+                        salirCliente(i, &readfds, &numClientes, arrayClientes);
                     }
                 }
             }
-		
-	close(sd);
-	return 0;
+        }
+    }
+    
+    }
+    close(sd);
+    return 0;
 }
+
 
 
 void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]){
