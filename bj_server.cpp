@@ -34,7 +34,18 @@ int main (){
     map<string, string> userData;
     rellenarVectorUsuario(userData);
 
-    for(int i=)
+    auto it = userData.begin();
+    for (int i = 0; it != userData.end() && i < userData.size(); ++i, ++it)
+    {
+        usuarios[i].username += it->first;
+        usuarios[i].password += it->second;
+
+        /*  [DEBUG] BIEN  */ 
+        // cout << "Usuario " << i + 1 << ": " << usuarios[i].username << "\n"
+        //     << "Contraseña: " << usuarios[i].password << endl; 
+    }
+
+
 
 	/*---------------------------------------------------- 
 		Descriptor del socket y buffer de datos                
