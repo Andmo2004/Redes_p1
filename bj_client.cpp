@@ -1,5 +1,3 @@
-#include <iostream>
-#include <vector>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -8,33 +6,37 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 #include <arpa/inet.h>
 
-using namespace std;
-
-/* El cliente manda cadena de textos al servidor hasta que manda la cadena FIN */ 
 
 int main ( )
 {
+  
 	/*---------------------------------------------------- 
 		Descriptor del socket y buffer de datos                
 	-----------------------------------------------------*/
-	int descrip;
+	int sd;
 	struct sockaddr_in sockname;
-	char buffer[100];
+	char buffer[250];
 	socklen_t len_sockname;
-	int salir = 0;
+    	fd_set readfds, auxfds;
+    	int salida;
+    	int fin = 0;
 	
+    
 	/* --------------------------------------------------
 		Se abre el socket 
 	---------------------------------------------------*/
-  	descrip = socket (AF_INET, SOCK_STREAM, 0);
-	if (descrip == -1)
+  	sd = socket (AF_INET, SOCK_STREAM, 0);
+	if (sd == -1)
 	{
 		perror("No se puede abrir el socket cliente\n");
     		exit (1);	
 	}
 
+   //PORT 2060
+    
 	/* ------------------------------------------------------------------
 		Se rellenan los campos de la estructura con la IP del 
 		servidor y el puerto del servicio que solicitamos
@@ -48,45 +50,70 @@ int main ( )
 	-------------------------------------------------------------------*/
 	len_sockname = sizeof(sockname);
 	
-	if (connect(descrip, (struct sockaddr *)&sockname, len_sockname) == -1)
+	if (connect(sd, (struct sockaddr *)&sockname, len_sockname) == -1)
 	{
 		perror ("Error de conexión");
 		exit(1);
 	}
+    
+    //Inicializamos las estructuras
+    FD_ZERO(&auxfds);
+    FD_ZERO(&readfds);
+    
+    FD_SET(0,&readfds);
+    FD_SET(sd,&readfds);
 
-	printf("Conectado al servidor.\n");
-
+    
 	/* ------------------------------------------------------------------
 		Se transmite la información
 	-------------------------------------------------------------------*/
 	do
 	{
-		salir = 0;
-		puts("Teclee el mensaje a transmitir");
-		fgets(buffer, sizeof(buffer),stdin);
-		buffer[strlen(buffer)-1] = '\0';
-			
-		if(strcmp(buffer, "FIN") == 0)
-			salir = 1;
+        auxfds = readfds;
+        salida = select(sd+1,&auxfds,NULL,NULL,NULL);
+        
+        //Tengo mensaje desde el servidor
+        if(FD_ISSET(sd, &auxfds)){
+            
+            bzero(buffer,sizeof(buffer));
+            recv(sd,buffer,sizeof(buffer),0);
+            
+            printf("\n%s\n",buffer);
+            
+            if(strcmp(buffer,"Demasiados clientes conectados\n") == 0)
+                fin =1;
+            
+            if(strcmp(buffer,"Desconexión servidor\n") == 0)
+                fin =1;
+            
+        }
+        else
+        {
+            
+            //He introducido información por teclado
+            if(FD_ISSET(0,&auxfds)){
+                bzero(buffer,sizeof(buffer));
+                
+                fgets(buffer,sizeof(buffer),stdin);
+                
+                if(strcmp(buffer,"SALIR\n") == 0){
+                        fin = 1;
+                
+                }
+                
+                send(sd,buffer,sizeof(buffer),0);
+                
+            }
+            
+            
+        }
+        
+        
+				
+    }while(fin == 0);
+		
+    close(sd);
 
-		// Enviar un mensaje al servidor
-		if (send(descrip, buffer, sizeof(buffer), 0) == -1) {
-        		perror("Error al enviar el mensaje");
-       			exit(1);
-   		}
-
-		// Recibir respuesta del servidor
-   		bzero(buffer, sizeof(buffer));
-   		if (recv(descrip, buffer, sizeof(buffer), 0) == -1) {
-        		perror("Error al recibir la respuesta");
-        		exit(1);
-    		}
-
-    	printf("Respuesta del servidor: %s\n", buffer);			
-	}while(!salir);
-	
-	// Cerrar el socket del cliente	
-	close(descrip);
-	return 0;
+    return 0;
+		
 }
-	

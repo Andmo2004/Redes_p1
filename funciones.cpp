@@ -34,12 +34,11 @@ void rellenarVectorUsuario(map<string, string> &userData)
         cout << "Error al abrir el archivo." << endl;
         return;
     }
-
-    // Leer los nombres de usuario y contraseñas desde el fichero
+    // Leer los nombres de usuario y contraseñas desde el fichero   
     while (fich >> username >> password) {
         userData[username] = password; // Almacenar en el map
     }
-
+    
     fich.close();
 }
 
@@ -105,8 +104,13 @@ void rellenarBaraja(vector<Carta> &baraja)
     }
 }
 
+void mostrarUserData(const map<string, string> userData){
+    auto it = userData.begin();
+    for (int i = 0; it != userData.end() && i < userData.size(); ++i, ++it)
+    {
+        /*  [DEBUG] BIEN  */ 
+        cout << "Usuario " << i + 1 << ": " << it->first << "\n"
+            << "Contraseña: " << it->second << endl; 
+    }
+}
 
-// int obtenerEstado(vector<Usuario> &usuarios, int i)
-// {
-//     return usuarios[i].estado;
-// };

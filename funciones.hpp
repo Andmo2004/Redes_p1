@@ -13,5 +13,6 @@ bool buscar_palabra(const char *cadena, const char *palabra);
 bool updateUserData(const string &username, const string &password, map<string, string> &userData);
 void rellenarVectorUsuario(map<string, string> &userData);
 void rellenarFicheroUsuario(const map<string, string> &userData);
+void mostrarUserData(const map<string, string> userData);
 
 #endif
