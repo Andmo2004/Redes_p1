@@ -33,6 +33,9 @@ int main (){
     mesas.resize(10);
     map<string, string> userData;
     rellenarVectorUsuario(userData);
+
+    for(int i=)
+
 	/*---------------------------------------------------- 
 		Descriptor del socket y buffer de datos                
 	-----------------------------------------------------*/
@@ -194,7 +197,8 @@ int main (){
                                 char temp[50], username[50];
                                 if(sscanf(buffer, "%s %s", temp, username) == 2) {
                                     if(!existe_usuario(string(username), userData)) {
-                                        send_to_user(i, buffer, sizeof(buffer), "-Err. Nombre de usuario no existente \n");
+
+                                        //send_to_user(i, buffer, sizeof(buffer), "-Err. Nombre de usuario no existente \n");
                                         salirCliente(i, &readfds, &numClientes, arrayClientes);
                                     } else {
                                         send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario correcto\n");
@@ -236,22 +240,9 @@ int main (){
                         /* Iniciar partida */
                         if(buscar_palabra(buffer, "INICIAR-PARTIDA")) {
                             if(usuarios[i].estado == USUARIO_VALIDADO){
-                                int counter = 0;
-                                for(int w = 0; w < usuarios.size(); w++) {
-                                    if(usuarios[w].id == i) {
-                                        usuarios[w].estado = 3;
-                                    }
-                                }
-                                for(int w = 0; w < usuarios.size(); w++) {
-                                    if(usuarios[w].estado == 3) {
-                                        counter++;
-                                        if(counter == 2) {
-                                            counter = 0;
-                                        } else {
-                                            send_to_user(usuarios[w].id, buffer, sizeof(buffer), "+Ok. Esperando a otro jugador...\n");
-                                        }
-                                    }
-                                }
+                               
+                                /**/
+
                             } else {
                                 send_to_user(i, buffer, sizeof(buffer), "-Err. El estado del usuario no corresponde a Validacion\n");
                             }
@@ -261,6 +252,8 @@ int main (){
                         if(buscar_palabra(buffer, "SALIR")) {
                             salirCliente(i, &readfds, &numClientes, arrayClientes);
                         }
+
+                        bzero(buffer, sizeof(buffer));  
                     }
 
                     if(strcmp(buffer, "SALIR\n") == 0) {

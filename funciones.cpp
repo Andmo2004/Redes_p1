@@ -5,6 +5,8 @@
 #include <cstring>
 #include <map>
 
+#include <time.h>
+
 #include "funciones.hpp"
 #include "bj_server.hpp"
 
@@ -62,7 +64,7 @@ bool contrasenia_correcta(const string &user, const string &password, const map<
 
 bool buscar_palabra(const char *cadena, const char *palabra) {
 
-    if (strstr(cadena, palabra) != NULL) {
+    if (strncmp(cadena,palabra,strlen(palabra))==0) {
         return true;
     }
     return false;
@@ -104,7 +106,7 @@ void rellenarBaraja(vector<Carta> &baraja)
 }
 
 
-int obtenerEstado(vector<Usuario> &usuarios, int i)
-{
-    return usuarios[i].estado;
-};
+// int obtenerEstado(vector<Usuario> &usuarios, int i)
+// {
+//     return usuarios[i].estado;
+// };
