@@ -24,6 +24,8 @@
 
 using namespace std;
 
+/*ELIMINAR USUARIOS DE VECTOR<USUARIO> CUANDO SE SALGAN DEL SERVER*/
+
 int main (){
     
     vector<Carta> baraja1;
@@ -203,6 +205,7 @@ int main (){
 
                             /* Registro */
                             if(buscar_palabra(buffer, "REGISTRO")) {
+                                /* HACER UN BUCLE QUE BUSQUE EL USUARIOS[K].id == i */
                                 if(usuarios[i].estado == CONECTADO){
                                     char username[50], password[50];
                                     if(sscanf(buffer, "REGISTRO -u %s -p %s", username, password) == 2) {
