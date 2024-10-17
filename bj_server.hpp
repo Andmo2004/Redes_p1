@@ -40,7 +40,8 @@ struct Carta{
 
 struct Mesa{
     int estadoPartida;
-    vector<int> jugador;
+    int jugador1;
+    int jugador2;
     vector<Carta> baraja;
 };
 

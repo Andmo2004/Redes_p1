@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstring>
 #include <map>
+#include <algorithm>
 
 #include <time.h>
 
@@ -102,6 +103,7 @@ void rellenarBaraja(vector<Carta> &baraja)
             baraja.push_back(nuevaCarta);
         }
     }
+    random_shuffle(baraja.begin(), baraja.end());
 }
 
 void mostrarUserData(const map<string, string> userData)
@@ -143,4 +145,39 @@ bool usuarioIsConectado(const vector<Usuario> &usuarios, const string username)
         }   
     }
     return false;
+}
+
+int numUsuario(const vector<Usuario> &usuarios, const int socket)
+{
+    for(int i=0; i<usuarios.size(); ++i)
+    {
+        if(usuarios[i].id == socket) return i;
+    }
+
+    return 0;
+}
+
+// Función para calcular el valor de una mano
+int calcularValorMano(const std::vector<Carta>& mano) {
+    int valorTotal = 0;
+    int ases = 0;
+
+    for (const Carta& carta : mano) {
+        if (carta.numero >= 2 && carta.numero <= 10) {
+            valorTotal += carta.numero;
+        } else if (carta.numero >= 11 && carta.numero <= 13) {
+            valorTotal += 10; // J, Q, K valen 10
+        } else if (carta.numero == 1) {
+            ases++;
+            valorTotal += 11; // El As inicialmente vale 11
+        }
+    }
+
+    // Ajustar el valor del As si es necesario
+    while (valorTotal > 21 && ases > 0) {
+        valorTotal -= 10; // El As puede valer 1 en lugar de 11
+        ases--;
+    }
+
+    return valorTotal;
 }

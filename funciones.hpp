@@ -8,6 +8,8 @@
 
 using namespace std;
 
+int numUsuario(const vector<Usuario> &usuarios, const int socket);
+int calcularValorMano(const std::vector<Carta>& mano);
 bool existe_usuario(const string &username, const map<string, string> &userData);
 bool contrasenia_correcta(const string &user, const string &password, const map<string, string> &userData);
 bool usuarioIsConectado(const vector<Usuario> &usuarios, const string username);

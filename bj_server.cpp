@@ -29,10 +29,11 @@ using namespace std;
 int main (){
     
     vector<Carta> baraja1;
-    vector<Mesa> mesas;
-    mesas.resize(10);
 
     vector<Usuario> usuarios;
+    vector<Mesa> partidas;
+    
+    partidas.resize(10);
     usuarios.resize(MAX_CLIENTS);
     
     map<string, string> userData;
@@ -208,7 +209,8 @@ int main (){
                             /* Registro */
                             if(buscar_palabra(buffer, "REGISTRO")) {
                                 /* HACER UN BUCLE QUE BUSQUE EL USUARIOS[K].id == i */
-                                if(usuarios[i].estado == CONECTADO){
+                                int k = numUsuario(usuarios, i);
+                                if(usuarios[k].estado == CONECTADO){
                                     char username[50], password[50];
                                     if(sscanf(buffer, "REGISTRO -u %s -p %s", username, password) == 2) {
                                         if(updateUserData(string(username), string(password), userData)) {
@@ -222,7 +224,7 @@ int main (){
                                             userData.insert(make_pair(string(username), string(password)));
                                             mostrarUserData(userData);
                                             salirCliente(i, &readfds, &numClientes, arrayClientes);
-                                            sacarUsuarioDesconectado(usuarios, i);
+                                            //sacarUsuarioDesconectado(usuarios, i);
                                             
                                         } else {
                                             //send_to_user(i, buffer, sizeof(buffer), "-Err. El usuario ya esta registrado\n");
@@ -231,7 +233,7 @@ int main (){
                                             send(i,buffer,sizeof(buffer),0);
 
                                             salirCliente(i, &readfds, &numClientes, arrayClientes);
-                                            sacarUsuarioDesconectado(usuarios, i);
+                                            //sacarUsuarioDesconectado(usuarios, i);
                                         }
                                     } else {
                                         //send_to_user(i, buffer, sizeof(buffer), "-Err. La informacion no se ha introducido correctamente\n");
@@ -240,7 +242,7 @@ int main (){
                                         send(i,buffer,sizeof(buffer),0);
 
                                         salirCliente(i, &readfds, &numClientes, arrayClientes);
-                                        sacarUsuarioDesconectado(usuarios, i);
+                                        //sacarUsuarioDesconectado(usuarios, i);
                                     }
                                 } else {
                                     //send_to_user(i, buffer, sizeof(buffer), "-Err. El estado del usuario no corresponde al Registro\n");
@@ -252,15 +254,18 @@ int main (){
 
                             /* Inicio de sesión */
                             if(buscar_palabra(buffer, "USUARIO")) {
+                                int k = numUsuario(usuarios, i);
                                 char temp[50], username[50];
                                 int aux = (sscanf(buffer, "%s %s", temp, username));
                                 if(usuarioIsConectado(usuarios, string(username))){
 
                                     cout << "-Err. El usuario " << string(username) << " ya esta conectado." << endl;
                                     salirCliente(i, &readfds, &numClientes, arrayClientes);
-                                    sacarUsuarioDesconectado(usuarios, i);
+                                    //sacarUsuarioDesconectado(usuarios, i);
+
                                 } else {
-                                    if(usuarios[i].estado == CONECTADO)
+                                    cout << "Num clientes: " << i << " Letra k: " << k << endl;
+                                    if(usuarios[k].estado == CONECTADO)
                                     {
                                         if(aux == 2) {
                                             if(!existe_usuario(string(username), userData)) {
@@ -270,20 +275,20 @@ int main (){
                                                 strcpy(buffer, "-Err. Nombre de usuario no existente \n");
                                                 send(i,buffer,sizeof(buffer),0);
 
-
                                                 salirCliente(i, &readfds, &numClientes, arrayClientes);
-                                                sacarUsuarioDesconectado(usuarios, i);
+                                                //sacarUsuarioDesconectado(usuarios, i);
+
                                             } else {
                                                 // send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario correcto\n");
                                                 memset(buffer, 0, sizeof(buffer));
                                                 strcpy(buffer, "+Ok. Usuario correcto\n");
                                                 send(i,buffer,sizeof(buffer),0);
 
-                                                usuarios[i].estado = USUARIO_CORRECTO;
-                                                usuarios[i].username = string(username);
+                                                usuarios[k].estado = USUARIO_CORRECTO;
+                                                usuarios[k].username = string(username);
 
 
-                                                printf("Usuario %s validado, estado: %d\n", username, usuarios[i].estado);
+                                                printf("Usuario %s validado, estado: %d\n", username, usuarios[k].estado);
                                                 temporal = string(username); 
                                             }
                                         }                                   
@@ -297,7 +302,8 @@ int main (){
                             }
 
                             if(buscar_palabra(buffer, "PASSWORD")) {
-                                if(usuarios[i].estado==USUARIO_CORRECTO){
+                                int k = numUsuario(usuarios, i);
+                                if(usuarios[k].estado==USUARIO_CORRECTO){
                                     char temp[50], password[50];
 
                                     if(sscanf(buffer, "%s %s", temp, password) == 2) {
@@ -316,10 +322,10 @@ int main (){
                                             strcpy(buffer, "+Ok. Usuario validado\n");
                                             send(i,buffer,sizeof(buffer),0);
 
-                                            usuarios[i].estado = USUARIO_VALIDADO;
-                                            usuarios[i].password = string(password); // tampoco afecta mucho la vrd
+                                            usuarios[k].estado = USUARIO_VALIDADO;
+                                            usuarios[k].password = string(password); // tampoco afecta mucho la vrd
 
-                                            printf("Contraseña correcta, estado: %d\n", usuarios[i].estado);
+                                            printf("Contraseña correcta, estado: %d\n", usuarios[k].estado);
                                         }
                                     }
                                 } else {
@@ -332,9 +338,10 @@ int main (){
 
                             /* Iniciar partida */
                             if(buscar_palabra(buffer, "INICIAR-PARTIDA")) {
-                                if(usuarios[i].estado == USUARIO_VALIDADO){
-                                    usuarios[i].estado = INICIAR_PARTIDA;
-                                    printf("Iniciando partida, estado: %d\n", usuarios[i].estado);
+                                int k = numUsuario(usuarios, i);
+                                if(usuarios[k].estado == USUARIO_VALIDADO){
+                                    usuarios[k].estado = INICIAR_PARTIDA;
+                                    printf("Iniciando partida, estado: %d\n", usuarios[k].estado);
                                     
                                     memset(buffer, 0, sizeof(buffer));
                                     strcpy(buffer, "+Ok. Entrando en la cola para jugar...\n");
