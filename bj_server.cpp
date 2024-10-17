@@ -38,16 +38,16 @@ int main (){
     map<string, string> userData;
     rellenarVectorUsuario(userData);
 
-    auto it = userData.begin();
-    for (int i = 0; it != userData.end() && i < userData.size(); ++i, ++it)
-    {
-        usuarios[i].username += it->first;
-        usuarios[i].password += it->second;
+    // auto it = userData.begin();
+    // for (int i = 0; it != userData.end() && i < userData.size(); ++i, ++it)
+    // {
+    //     usuarios[i].username += it->first;
+    //     usuarios[i].password += it->second;
 
-        /*  [DEBUG] BIEN  */ 
-        // cout << "Usuario " << i + 1 << ": " << usuarios[i].username << "\n"
-        //     << "Contraseña: " << usuarios[i].password << endl; 
-    }
+    //     /*  [DEBUG] BIEN  */ 
+    //     // cout << "Usuario " << i + 1 << ": " << usuarios[i].username << "\n"
+    //     //     << "Contraseña: " << usuarios[i].password << endl; 
+    // }
     mostrarUserData(userData);
 
 
@@ -150,8 +150,10 @@ int main (){
                             if(numClientes < MAX_CLIENTS) {
 
                                 arrayClientes[numClientes] = new_sd;
+
                                 usuarios[numClientes].estado = CONECTADO;
                                 usuarios[numClientes].id = new_sd;
+                                
                                 numClientes++;
 
                                 FD_SET(new_sd, &readfds);
@@ -220,6 +222,7 @@ int main (){
                                             userData.insert(make_pair(string(username), string(password)));
                                             mostrarUserData(userData);
                                             salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                            sacarUsuarioDesconectado(usuarios, i);
                                             
                                         } else {
                                             //send_to_user(i, buffer, sizeof(buffer), "-Err. El usuario ya esta registrado\n");
@@ -228,6 +231,7 @@ int main (){
                                             send(i,buffer,sizeof(buffer),0);
 
                                             salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                            sacarUsuarioDesconectado(usuarios, i);
                                         }
                                     } else {
                                         //send_to_user(i, buffer, sizeof(buffer), "-Err. La informacion no se ha introducido correctamente\n");
@@ -236,6 +240,7 @@ int main (){
                                         send(i,buffer,sizeof(buffer),0);
 
                                         salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                        sacarUsuarioDesconectado(usuarios, i);
                                     }
                                 } else {
                                     //send_to_user(i, buffer, sizeof(buffer), "-Err. El estado del usuario no corresponde al Registro\n");
@@ -247,35 +252,47 @@ int main (){
 
                             /* Inicio de sesión */
                             if(buscar_palabra(buffer, "USUARIO")) {
-                                if(usuarios[i].estado == CONECTADO)
-                                {
-                                    char temp[50], username[50];
-                                    if(sscanf(buffer, "%s %s", temp, username) == 2) {
-                                        if(!existe_usuario(string(username), userData)) {
+                                char temp[50], username[50];
+                                int aux = (sscanf(buffer, "%s %s", temp, username));
+                                if(usuarioIsConectado(usuarios, string(username))){
 
-                                            //send_to_user(i, buffer, sizeof(buffer), "-Err. Nombre de usuario no existente \n");
-                                            memset(buffer, 0, sizeof(buffer));
-                                            strcpy(buffer, "-Err. Nombre de usuario no existente \n");
-                                            send(i,buffer,sizeof(buffer),0);
-
-
-                                            salirCliente(i, &readfds, &numClientes, arrayClientes);
-                                        } else {
-                                            // send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario correcto\n");
-                                            memset(buffer, 0, sizeof(buffer));
-                                            strcpy(buffer, "+Ok. Usuario correcto\n");
-                                            send(i,buffer,sizeof(buffer),0);
-
-                                            usuarios[i].estado = USUARIO_CORRECTO;
-                                            printf("Usuario %s validado, estado: %d\n", username, usuarios[i].estado);
-                                            temporal = string(username); 
-                                        }
-                                    }                                   
+                                    cout << "-Err. El usuario " << string(username) << " ya esta conectado." << endl;
+                                    salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                    sacarUsuarioDesconectado(usuarios, i);
                                 } else {
-                                    //send_to_user(i, buffer, sizeof(buffer), "-Err. El estado del usuario no corresponde al Inicio de Sesion\n");
-                                    memset(buffer, 0, sizeof(buffer));
-                                    strcpy(buffer, "-Err. El estado del usuario no corresponde al Inicio de Sesion\n");
-                                    send(i,buffer,sizeof(buffer),0);
+                                    if(usuarios[i].estado == CONECTADO)
+                                    {
+                                        if(aux == 2) {
+                                            if(!existe_usuario(string(username), userData)) {
+
+                                                //send_to_user(i, buffer, sizeof(buffer), "-Err. Nombre de usuario no existente \n");
+                                                memset(buffer, 0, sizeof(buffer));
+                                                strcpy(buffer, "-Err. Nombre de usuario no existente \n");
+                                                send(i,buffer,sizeof(buffer),0);
+
+
+                                                salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                                sacarUsuarioDesconectado(usuarios, i);
+                                            } else {
+                                                // send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario correcto\n");
+                                                memset(buffer, 0, sizeof(buffer));
+                                                strcpy(buffer, "+Ok. Usuario correcto\n");
+                                                send(i,buffer,sizeof(buffer),0);
+
+                                                usuarios[i].estado = USUARIO_CORRECTO;
+                                                usuarios[i].username = string(username);
+
+
+                                                printf("Usuario %s validado, estado: %d\n", username, usuarios[i].estado);
+                                                temporal = string(username); 
+                                            }
+                                        }                                   
+                                    } else {
+                                        //send_to_user(i, buffer, sizeof(buffer), "-Err. El estado del usuario no corresponde al Inicio de Sesion\n");
+                                        memset(buffer, 0, sizeof(buffer));
+                                        strcpy(buffer, "-Err. El estado del usuario no corresponde al Inicio de Sesion\n");
+                                        send(i,buffer,sizeof(buffer),0);
+                                    }
                                 }
                             }
 
@@ -300,6 +317,8 @@ int main (){
                                             send(i,buffer,sizeof(buffer),0);
 
                                             usuarios[i].estado = USUARIO_VALIDADO;
+                                            usuarios[i].password = string(password); // tampoco afecta mucho la vrd
+
                                             printf("Contraseña correcta, estado: %d\n", usuarios[i].estado);
                                         }
                                     }
@@ -334,6 +353,7 @@ int main (){
                             /* Salir */
                             if(strcmp(buffer, "SALIR\n") == 0) {
                                 salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                sacarUsuarioDesconectado(usuarios, i);
                             }
                         }
 
@@ -341,6 +361,7 @@ int main (){
                         if(recibidos == 0) {
                             printf("El socket %d, ha introducido ctrl+c\n", i);
                             salirCliente(i, &readfds, &numClientes, arrayClientes);
+                            sacarUsuarioDesconectado(usuarios, i);
                         }
                     }
                 }

@@ -104,7 +104,8 @@ void rellenarBaraja(vector<Carta> &baraja)
     }
 }
 
-void mostrarUserData(const map<string, string> userData){
+void mostrarUserData(const map<string, string> userData)
+{    
     auto it = userData.begin();
     for (int i = 0; it != userData.end() && i < userData.size(); ++i, ++it)
     {
@@ -114,3 +115,32 @@ void mostrarUserData(const map<string, string> userData){
     }
 }
 
+void sacarUsuarioDesconectado(vector<Usuario> &usuarios, const int socket)
+{
+    for(size_t i = 0; i < usuarios.size(); ++i)
+    {
+        if(usuarios[i].id == socket)
+        {
+            // Eliminar el usuario del vector
+            cout << "Usuario " << usuarios[i].username << " ha sido eliminado." << endl;
+            usuarios.erase(usuarios.begin() + i);
+            return; // Terminamos una vez eliminado
+        }
+    }
+    cout << "Usuario con socket " << socket << " no encontrado." << endl;
+}
+
+bool usuarioIsConectado(const vector<Usuario> &usuarios, const string username)
+{
+    cout << "Usuarios conectados" << endl;
+    for(size_t i = 0; i < usuarios.size(); ++i)
+    {
+        cout << usuarios[i].username << endl;
+        if(usuarios[i].username == username)
+        {
+            
+            return true; // Terminamos una vez eliminado
+        }   
+    }
+    return false;
+}
