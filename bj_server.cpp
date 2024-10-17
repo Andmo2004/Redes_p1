@@ -360,6 +360,9 @@ int main (){
                         // Si el cliente introdujo ctrl+c
                         if(recibidos == 0) {
                             printf("El socket %d, ha introducido ctrl+c\n", i);
+                            /*
+                              FUNCION PARA SACAR USUARIO DEL VECTOR
+                            */
                             salirCliente(i, &readfds, &numClientes, arrayClientes);
                             sacarUsuarioDesconectado(usuarios, i);
                         }
