@@ -1,0 +1,9 @@
+{
+    "editor.minimap.enabled": false,
+    "editor.fontSize": 15,
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active",
+    "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+    "editor.guides.indentation": true,
+    "editor.guides.highlightActiveIndentation": true
+}
