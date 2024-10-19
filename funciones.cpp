@@ -78,9 +78,9 @@ bool updateUserData(const string &username, const string &password, map<string, 
     } else {
         // Si el usuario no existe, lo agregamos al mapa
         userData[username] = password;
+        rellenarFicheroUsuario(userData);
         return true; 
     }   
-        //rellenarFicheroUsuario(userData);
 }
 
 
@@ -211,4 +211,13 @@ int miPartida(const vector<Mesa> &partidas, const int socket)
         }
     }
     return 0;
+}
+
+int whoAmI(const vector<Mesa> &partidas, const int socket, const int partida)
+{
+    if(partidas[partida].jugador1 == socket){
+        return 1;
+    } else {
+        return 2;
+    }
 }

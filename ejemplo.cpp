@@ -48,6 +48,8 @@ if(strcmp(buffer, "INICIAR-PARTIDA\n") == 0){
 
             partidas[numPartida].cartasJugador1.push_back(partidas[numPartida].baraja.back());
             partidas[numPartida].baraja.pop_back();
+
+            partidas[numPartida].manoJugador1 = calcularValorMano(partidas[numPartida].cartasJugador1);
             
             // DAMOS DOS CARTAS AL JUGADOR 2
             partidas[numPartida].cartasJugador2.push_back(partidas[numPartida].baraja.back());
@@ -55,6 +57,8 @@ if(strcmp(buffer, "INICIAR-PARTIDA\n") == 0){
 
             partidas[numPartida].cartasJugador2.push_back(partidas[numPartida].baraja.back());
             partidas[numPartida].baraja.pop_back();
+
+            partidas[numPartida].manoJugador2 = calcularValorMano(partidas[numPartida].cartasJugador2);
         
             memset(buffer, 0, sizeof(buffer));
 
@@ -84,10 +88,51 @@ if(strcmp(buffer, "PEDIR-CARTA\n") == 0){
     int k = numUsuario(usuarios, i);
     if(usuarios[k].estado == JUGANDO){
         int partUsuario == miPartida(partidas, i);
-        
-        if(partidas[partUsuario].manoJugador1)
+        if(whoAmI(partidas, i, partUsuario) == 1)
+        {
+            if(partidas[partUsuario].manoJugador1 > 21){
+                memset(buffer, 0, sizeof(buffer));
+                strcpy(buffer, "-Err. Excedido el valor de 21, si intenta solicitar más cartas una vez ya
+                    ha superado los 21 puntos, el servidor le devolverá error\n");
+                send(i,buffer,sizeof(buffer),0);                
+            } else {
+                partidas[numPartida].cartasJugador1.push_back(partidas[numPartida].baraja.back());
+                partidas[numPartida].baraja.pop_back();
 
+                partidas[numPartida].manoJugador1 = calcularValorMano(partidas[numPartida].cartasJugador1);
+                int numCartasJugador = partidas[numPartida].cartasJugador1.size() - 1; 
 
+                memset(buffer, 0, sizeof(buffer));
+
+                sprintf(buffer, "+Ok.[%s,%d] Tienes: %d",
+                        partidas[numPartida].cartasJugador1[numCartasJugador].palo.c_str(),
+                        partidas[numPartida].cartasJugador1[numCartasJugador].numero,
+                        partidas[numPartida].manoJugador1);
+                send(partidas[numPartida].jugador1, buffer, sizeof(buffer), 0);
+            }
+        } else {
+
+            if(partidas[partUsuario].manoJugador2 > 21){
+                memset(buffer, 0, sizeof(buffer));
+                strcpy(buffer, "-Err. Excedido el valor de 21, si intenta solicitar más cartas una vez ya
+                    ha superado los 21 puntos, el servidor le devolverá error\n");
+                send(i,buffer,sizeof(buffer),0);                
+            } else {
+                partidas[numPartida].cartasJugador2.push_back(partidas[numPartida].baraja.back());
+                partidas[numPartida].baraja.pop_back();
+
+                partidas[numPartida].manoJugador2 = calcularValorMano(partidas[numPartida].cartasJugador2);
+                int numCartasJugador = partidas[numPartida].cartasJugador2.size() - 1; 
+
+                memset(buffer, 0, sizeof(buffer));
+
+                sprintf(buffer, "+Ok.[%s,%d] Tienes: %d",
+                        partidas[numPartida].cartasJugador2[numCartasJugador].palo.c_str(),
+                        partidas[numPartida].cartasJugador2[numCartasJugador].numero,
+                        partidas[numPartida].manoJugador2);
+                send(partidas[numPartida].jugador2, buffer, sizeof(buffer), 0);
+            }
+        }
 
     } else {
         memset(buffer, 0, sizeof(buffer));
