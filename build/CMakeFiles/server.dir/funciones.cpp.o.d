@@ -1,5 +1,5 @@
 CMakeFiles/server.dir/funciones.cpp.o: \
- /mnt/c/Users/Lenovo\ ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1/funciones.cpp \
+ /home/andmo/Escritorio/Redes/github/Redes_p1/funciones.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/11/iostream \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -172,7 +172,23 @@ CMakeFiles/server.dir/funciones.cpp.o: \
  /usr/include/c++/11/bits/algorithmfwd.h \
  /usr/include/c++/11/bits/stl_heap.h \
  /usr/include/c++/11/bits/stl_tempbuf.h \
- /usr/include/c++/11/bits/uniform_int_dist.h \
+ /usr/include/c++/11/bits/uniform_int_dist.h /usr/include/c++/11/chrono \
+ /usr/include/c++/11/ratio /usr/include/c++/11/limits \
+ /usr/include/c++/11/ctime /usr/include/c++/11/bits/parse_numbers.h \
+ /usr/include/c++/11/random /usr/include/c++/11/cmath /usr/include/math.h \
+ /usr/include/x86_64-linux-gnu/bits/math-vector.h \
+ /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
+ /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
+ /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
+ /usr/include/x86_64-linux-gnu/bits/fp-fast.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
+ /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
+ /usr/include/c++/11/bits/random.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/opt_random.h \
+ /usr/include/c++/11/bits/random.tcc /usr/include/c++/11/numeric \
+ /usr/include/c++/11/bits/stl_numeric.h \
  /usr/include/x86_64-linux-gnu/sys/socket.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
  /usr/include/x86_64-linux-gnu/bits/socket.h \
@@ -199,5 +215,5 @@ CMakeFiles/server.dir/funciones.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/unistd.h \
  /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
  /usr/include/linux/close_range.h \
- /mnt/c/Users/Lenovo\ ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1/funciones.hpp \
- /mnt/c/Users/Lenovo\ ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1/bj_server.hpp
+ /home/andmo/Escritorio/Redes/github/Redes_p1/funciones.hpp \
+ /home/andmo/Escritorio/Redes/github/Redes_p1/bj_server.hpp

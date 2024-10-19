@@ -1,5 +1,5 @@
 CMakeFiles/client.dir/bj_client.cpp.o: \
- /mnt/c/Users/Lenovo\ ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1/bj_client.cpp \
+ /home/andmo/Escritorio/Redes/github/Redes_p1/bj_client.cpp \
  /usr/include/stdc-predef.h /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \

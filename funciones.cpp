@@ -5,6 +5,8 @@
 #include <cstring>
 #include <map>
 #include <algorithm>
+#include <chrono> // Para std::chrono::system_clock
+#include <random>
 
 #include <time.h>
 #include <sys/types.h>
@@ -109,7 +111,12 @@ void rellenarBaraja(vector<Carta> &baraja)
             baraja.push_back(nuevaCarta);
         }
     }
-    random_shuffle(baraja.begin(), baraja.end());
+
+    // Mezclar la baraja
+    std::random_device rd; // Obtiene una semilla aleatoria del sistema
+    std::mt19937 g(rd()); // Inicializa el generador con la semilla
+    
+    std::shuffle(baraja.begin(), baraja.end(), g); // Mezclar la baraja
 }
 
 void mostrarUserData(const map<string, string> userData)
@@ -130,7 +137,7 @@ void sacarUsuarioDesconectado(vector<Usuario> &usuarios, const int socket)
         if(usuarios[i].id == socket)
         {
             // Eliminar el usuario del vector
-            cout << "Usuario " << usuarios[i].username << " ha sido eliminado." << endl;
+            //cout << "Usuario " << usuarios[i].username << " ha sido eliminado." << endl;
             usuarios.erase(usuarios.begin() + i);
             return; // Terminamos una vez eliminado
         }
@@ -140,10 +147,10 @@ void sacarUsuarioDesconectado(vector<Usuario> &usuarios, const int socket)
 
 bool usuarioIsConectado(const vector<Usuario> &usuarios, const string username)
 {
-    cout << "Usuarios conectados" << endl;
+    //cout << "Usuarios conectados" << endl;
     for(size_t i = 0; i < usuarios.size(); ++i)
     {
-        cout << usuarios[i].username << endl;
+        //cout << usuarios[i].username << endl;
         if(usuarios[i].username == username)
         {
             
@@ -160,7 +167,7 @@ int numUsuario(const vector<Usuario> &usuarios, const int socket)
         if(usuarios[i].id == socket) return (int)i;
     }
     
-    printf("[DEBUG] Usuario con socket %d no encontrado.\n", socket);
+    //printf("[DEBUG] Usuario con socket %d no encontrado.\n", socket);
 
     return -1;
 }
@@ -193,11 +200,11 @@ int calcularValorMano(const std::vector<Carta>& mano) {
 int buscarPartidaLibre(const vector<Mesa> &partidas)
 {
     int numPartidas = partidas.size();  // Guardamos el tamaño una vez
-    printf("Numero total de partidas %d\n", numPartidas);
+    //printf("Numero total de partidas %d\n", numPartidas);
     for(int i = 0; i < numPartidas; ++i)
     {
         if(partidas[i].estadoPartida == VACIA || partidas[i].estadoPartida == INCOMPLETA){
-            printf("Partida seleccionada %d, con Estado: %d\n", i, partidas[i].estadoPartida);  // Corregido printf
+            //printf("Partida seleccionada %d, con Estado: %d\n", i, partidas[i].estadoPartida);  // Corregido printf
             return i;  // Devuelve el índice de la partida libre
         }
     }
@@ -229,7 +236,7 @@ int whoAmI(const vector<Mesa> &partidas, const int socket, const int partida)
     // Check if the partida index is valid
     int tam = partidas.size();
     if (partida < 0 || partida >= tam) {
-        printf("[ERROR] Invalid partida index.\n");
+        //printf("[ERROR] Invalid partida index.\n");
         return -1; // Return an error code for invalid partida
     }
 
@@ -246,10 +253,10 @@ int whoAmI(const vector<Mesa> &partidas, const int socket, const int partida)
 
 bool finPartida(const vector<Mesa> &partidas, vector<Usuario> &usuarios, const int partida)
 {
-    int jug1 = numUsuario(usuarios, partidas[partida].jugador1);
-    int jug2 = numUsuario(usuarios, partidas[partida].jugador2);
+    int jug1 = partidas[partida].jugador1;
+    int jug2 = partidas[partida].jugador2;
 
-    printf("\n\n[DEBUG] partidas[partida].jugador1 = %d.\n[DEBUG] partidas[partida].jugador2 = %d.\n\n",  partidas[partida].jugador1,  partidas[partida].jugador2);
+    //printf("\n\n[DEBUG] partidas[partida].jugador1 = %d.\n[DEBUG] partidas[partida].jugador2 = %d.\n\n",  partidas[partida].jugador1,  partidas[partida].jugador2);
 
     int tamUsuarios = usuarios.size();
 
@@ -258,9 +265,9 @@ bool finPartida(const vector<Mesa> &partidas, vector<Usuario> &usuarios, const i
         return false; // or handle the error appropriately
     }
 
-    printf("[DEBUG] Funcion finPartida\n Partida: %d\n  + Jugador1: %s\n    > Socket: %d\n    > NumUsuario: %d\n    > Estado: %d\n  + Jugador2: %s\n    > Socket: %d\n    > NumUsuario: %d\n    > Estado: %d\n",
-        partida,usuarios[jug1].username.c_str(), usuarios[jug1].id, jug1, usuarios[jug1].estado,
-        usuarios[jug2].username.c_str(), usuarios[jug2].id, jug2, usuarios[jug2].estado);  
+    //printf("[DEBUG] Funcion finPartida\n Partida: %d\n  + Jugador1: %s\n    > Socket: %d\n    > NumUsuario: %d\n    > Estado: %d\n  + Jugador2: %s\n    > Socket: %d\n    > NumUsuario: %d\n    > Estado: %d\n",
+        // partida,usuarios[jug1].username.c_str(), usuarios[jug1].id, jug1, usuarios[jug1].estado,
+        // usuarios[jug2].username.c_str(), usuarios[jug2].id, jug2, usuarios[jug2].estado);  
 
     return (usuarios[jug1].estado == WAITING && usuarios[jug2].estado == WAITING);
 }
@@ -278,8 +285,8 @@ void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuar
     partidas[part].manoJugador2 = puntos2; 
     int mano2 = partidas[part].manoJugador2;
 
-    int jug1 = usuarios[numUsuario(usuarios, partidas[part].jugador1)].id;
-    int jug2 = usuarios[numUsuario(usuarios, partidas[part].jugador2)].id;
+    int jug1 = usuarios[partidas[part].jugador1].id;
+    int jug2 = usuarios[partidas[part].jugador2].id;
 
     //MAYOR QUE 21 AMBOS JUGADORES
     if(mano1 > 21 && mano2 > 21){
@@ -296,7 +303,7 @@ void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuar
         
         memset(buffer, 0, sizeof(buffer));
         sprintf(buffer, "+Ok. Jugador <%s> ha ganado la partida. Tus cartas: %d, las de tu rival: %d", 
-                usuarios[numUsuario(usuarios, partidas[part].jugador2)].username.c_str(),
+                usuarios[partidas[part].jugador2].username.c_str(),
                 mano1, mano2);
         send(jug1,buffer,sizeof(buffer),0);
 
@@ -315,7 +322,7 @@ void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuar
 
         memset(buffer, 0, sizeof(buffer));
         sprintf(buffer, "+Ok. Jugador <%s> ha ganado la partida. Tus cartas: %d, las de tu rival: %d", 
-                usuarios[numUsuario(usuarios, partidas[part].jugador1)].username.c_str(),
+                usuarios[partidas[part].jugador1].username.c_str(),
                 mano2, mano1);
         send(jug2,buffer,sizeof(buffer),0);
 
@@ -330,7 +337,7 @@ void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuar
 
         memset(buffer, 0, sizeof(buffer));
         sprintf(buffer, "+Ok. Jugador <%s> ha ganado la partida. Tus cartas: %d, las de tu rival: %d", 
-                usuarios[numUsuario(usuarios, partidas[part].jugador1)].username.c_str(),
+                usuarios[partidas[part].jugador1].username.c_str(),
                 mano2, mano1);
         send(jug2,buffer,sizeof(buffer),0);
 
@@ -341,7 +348,7 @@ void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuar
 
         memset(buffer, 0, sizeof(buffer));
         sprintf(buffer, "+Ok. Jugador <%s> ha ganado la partida. Tus cartas: %d, las de tu rival: %d", 
-                usuarios[numUsuario(usuarios, partidas[part].jugador2)].username.c_str(),
+                usuarios[partidas[part].jugador2].username.c_str(),
                 mano1, mano2);
         send(jug1,buffer,sizeof(buffer),0);
 
@@ -356,8 +363,8 @@ void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuar
     if(mano1 == mano2){
         memset(buffer, 0, sizeof(buffer));
         sprintf(buffer, "+Ok. Jugador <%s> y Jugador <%s> habeis empatado la partida.", 
-                usuarios[numUsuario(usuarios, partidas[part].jugador1)].username.c_str(),
-                usuarios[numUsuario(usuarios, partidas[part].jugador2)].username.c_str());
+                usuarios[partidas[part].jugador1].username.c_str(),
+                usuarios[partidas[part].jugador2].username.c_str());
         send(jug1,buffer,sizeof(buffer),0);
         send(jug2,buffer,sizeof(buffer),0);
 

@@ -33,7 +33,7 @@ int main (){
     vector<Mesa> partidas;
     partidas.resize(10);
     inicializarEstadoPartidas(partidas);
-    mostrarDatosPartidas(partidas);
+    // mostrarDatosPartidas(partidas);
     
     vector<Usuario> usuarios;
     usuarios.resize(MAX_CLIENTS);
@@ -41,7 +41,7 @@ int main (){
     map<string, string> userData;
     rellenarVectorUsuario(userData);
 
-    mostrarUserData(userData);
+    // mostrarUserData(userData);
 
 
 	/*---------------------------------------------------- 
@@ -130,15 +130,15 @@ int main (){
         auxfds = readfds;
         salida = select(FD_SETSIZE, &auxfds, NULL, NULL, NULL);
 
-        if (salida == -1) {
-            perror("Error en select");
-            exit(EXIT_FAILURE);
+        if ((salida < 0) && (errno != EINTR)) {
+            perror("select error");
         }
 
         if(salida > 0) {
             
             for(i = 0; i < FD_SETSIZE; i++) {
                 // Buscamos el socket por el que se ha establecido la comunicación
+                //if(FD_ISSET(i, &auxfds))
                 if(FD_ISSET(i, &auxfds)) {
 
                     if(i == sd) { // Nueva conexión
@@ -223,7 +223,7 @@ int main (){
 
 
                                             //userData.insert(make_pair(string(username), string(password)));
-                                            mostrarUserData(userData);
+                                            //mostrarUserData(userData);
                                             salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
                                             //sacarUsuarioDesconectado(usuarios, i);
                                             
@@ -260,12 +260,15 @@ int main (){
                                 int aux = (sscanf(buffer, "%s %s", temp, username));
                                 if(usuarioIsConectado(usuarios, string(username))){
 
-                                    cout << "-Err. El usuario " << string(username) << " ya esta conectado." << endl;
+                                    memset(buffer, 0, sizeof(buffer));
+                                    strcpy(buffer, "-Err. El Usuario ya está conectado\n");
+                                    send(i,buffer,sizeof(buffer),0);
+                                    //cout << "-Err. El usuario " << string(username) << " ya esta conectado." << endl;
                                     salirCliente(i, &readfds, &numClientes, arrayClientes);
                                     //sacarUsuarioDesconectado(usuarios, i);
 
                                 } else {
-                                    cout << "Num clientes: " << i << " Letra k: " << k << endl;
+                                    //cout << "Num clientes: " << i << " Letra k: " << k << endl;
                                     if(usuarios[k].estado == CONECTADO)
                                     {
                                         if(aux == 2) {
@@ -289,7 +292,7 @@ int main (){
                                                 usuarios[k].username = string(username);
 
 
-                                                printf("Usuario %s validado, estado: %d\n", username, usuarios[k].estado);
+                                                //printf("Usuario %s validado, estado: %d\n", username, usuarios[k].estado);
                                                 temporal = string(username); 
                                             }
                                         }                                   
@@ -326,7 +329,7 @@ int main (){
                                             usuarios[k].estado = USUARIO_VALIDADO;
                                             usuarios[k].password = string(password); // tampoco afecta mucho la vrd
 
-                                            printf("Contraseña correcta, estado: %d\n", usuarios[k].estado);
+                                            //printf("Contraseña correcta, estado: %d\n", usuarios[k].estado);
                                         }
                                     }
                                 } else {
@@ -342,16 +345,16 @@ int main (){
                                 int k = numUsuario(usuarios, i);
                                 if(usuarios[k].estado == USUARIO_VALIDADO){
                                     usuarios[k].estado = INICIAR_PARTIDA;
-                                    printf("Iniciando partida, estado: %d\n", usuarios[k].estado);
+                                    //printf("Iniciando partida, estado: %d\n", usuarios[k].estado);
 
                                     memset(buffer, 0, sizeof(buffer));
                                     strcpy(buffer, "+Ok. Entrando en la cola para jugar...\n");
                                     send(i, buffer, strlen(buffer), 0);  // Cambiado a strlen(buffer)
 
-                                    printf("[DEBUG] Funcion buscarPartidaLibre\n");
+                                    //printf("[DEBUG] Funcion buscarPartidaLibre\n");
                                     int numPartida = buscarPartidaLibre(partidas);
                                     
-                                    printf("[DEBUG] numero de la partida: %d, del Jugador %s\n", numPartida, usuarios[k].username.c_str());
+                                    //printf("[DEBUG] numero de la partida: %d, del Jugador %s\n", numPartida, usuarios[k].username.c_str());
 
                                     if(numPartida != -1 && partidas[numPartida].estadoPartida == VACIA){  // Validación de numPartida
                                         partidas[numPartida].jugador1 = k;
@@ -359,8 +362,8 @@ int main (){
 
                                         usuarios[k].estado = WAITING;
                                         
-                                        printf("[DEBUG] Usuario: %s\n   > Socket: %d\n   > Estado: %d\n   > NPartida:%d\n   > EstatusPartida: %d\n",
-                                            usuarios[k].username.c_str(), usuarios[k].id, usuarios[k].estado, numPartida, partidas[numPartida].estadoPartida);
+                                        //printf("[DEBUG] Usuario: %s\n   > Socket: %d\n   > Estado: %d\n   > NPartida:%d\n   > EstatusPartida: %d\n",
+                                            // usuarios[k].username.c_str(), usuarios[k].id, usuarios[k].estado, numPartida, partidas[numPartida].estadoPartida);
 
                                         memset(buffer, 0, sizeof(buffer));
                                         strcpy(buffer, "+Ok. Esperando otro jugador\n");
@@ -451,7 +454,7 @@ int main (){
                                                     partidas[partUsuario].cartasJugador1[numCartasJugador].palo.c_str(),
                                                     partidas[partUsuario].cartasJugador1[numCartasJugador].numero,
                                                     partidas[partUsuario].manoJugador1);
-                                            send(partidas[partUsuario].jugador1, buffer, sizeof(buffer), 0);
+                                            send(usuarios[k].id, buffer, sizeof(buffer), 0);
                                         }
                                     } else {
 
@@ -472,7 +475,7 @@ int main (){
                                                     partidas[partUsuario].cartasJugador2[numCartasJugador].palo.c_str(),
                                                     partidas[partUsuario].cartasJugador2[numCartasJugador].numero,
                                                     partidas[partUsuario].manoJugador2);
-                                            send(partidas[partUsuario].jugador2, buffer, sizeof(buffer), 0);
+                                            send(usuarios[k].id, buffer, sizeof(buffer), 0);
                                         }
                                     }
 
@@ -490,13 +493,13 @@ int main (){
                                     usuarios[k].estado = WAITING;
                                     int partUsuario = miPartida(partidas, i);
 
-                                    printf("[DEBUG] Partida: %d\n   > Jugador 1: %d\n   > Jugador 2: %d\n   > Estatus: %d\n", 
-                                            partUsuario, partidas[partUsuario].jugador1, partidas[partUsuario].jugador2,
-                                            partidas[partUsuario].estadoPartida);
+                                    //printf("[DEBUG] Partida: %d\n   > Jugador 1: %d\n   > Jugador 2: %d\n   > Estatus: %d\n", 
+                                            // partUsuario, partidas[partUsuario].jugador1, partidas[partUsuario].jugador2,
+                                            // partidas[partUsuario].estadoPartida);
 
                                     if(whoAmI(partidas, i, partUsuario) == 1){
                                         if(finPartida(partidas, usuarios, partUsuario)){
-                                            int jug2 = numUsuario(usuarios, partidas[partUsuario].jugador2);
+                                            int jug2 = partidas[partUsuario].jugador2;
                                             usuarios[k].estado = USUARIO_VALIDADO;
                                             usuarios[jug2].estado = USUARIO_VALIDADO;
                                             resultadoPartida(partidas, partUsuario, usuarios);
@@ -508,7 +511,7 @@ int main (){
                                         }
                                     } else {
                                         if(finPartida(partidas, usuarios, partUsuario)){
-                                            int jug1 = numUsuario(usuarios, partidas[partUsuario].jugador1);
+                                            int jug1 = partidas[partUsuario].jugador1;
                                             usuarios[k].estado = USUARIO_VALIDADO;
                                             usuarios[jug1].estado = USUARIO_VALIDADO;
                                             resultadoPartida(partidas, partUsuario, usuarios);

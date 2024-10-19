@@ -63,4 +63,7 @@ struct Mesa{
     vector<Carta> cartasJugador2;
 };
 
+void sendError(int userId, const char* message);
+void sendMessage(int userId, const char* message);
+
 #endif

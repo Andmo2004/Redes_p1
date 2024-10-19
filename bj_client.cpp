@@ -71,6 +71,11 @@ int main ( )
 	{
         auxfds = readfds;
         salida = select(sd+1,&auxfds,NULL,NULL,NULL);
+
+		if (salida == -1) {
+            perror("Error en select");
+            exit(EXIT_FAILURE);
+        }
         
         //Tengo mensaje desde el servidor
         if(FD_ISSET(sd, &auxfds)){
@@ -94,7 +99,9 @@ int main ( )
             if(FD_ISSET(0,&auxfds)){
                 bzero(buffer,sizeof(buffer));
                 
-                fgets(buffer,sizeof(buffer),stdin);
+            	if (fgets(buffer, sizeof(buffer), stdin) == NULL){
+                    perror("Error al leer la entrada");
+                }
                 
                 if(strcmp(buffer,"SALIR\n") == 0){
                         fin = 1;

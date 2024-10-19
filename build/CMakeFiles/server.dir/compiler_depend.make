@@ -480,6 +480,11 @@ CMakeFiles/server.dir/funciones.cpp.o: ../funciones.cpp \
   /usr/include/c++/11/bits/stl_heap.h \
   /usr/include/c++/11/bits/stl_tempbuf.h \
   /usr/include/c++/11/bits/uniform_int_dist.h \
+  /usr/include/c++/11/chrono \
+  /usr/include/c++/11/ratio \
+  /usr/include/c++/11/limits \
+  /usr/include/c++/11/ctime \
+  /usr/include/c++/11/bits/parse_numbers.h \
   /usr/include/x86_64-linux-gnu/sys/socket.h \
   /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
   /usr/include/x86_64-linux-gnu/bits/socket.h \
@@ -513,6 +518,14 @@ CMakeFiles/server.dir/funciones.cpp.o: ../funciones.cpp \
   ../funciones.hpp \
   ../bj_server.hpp
 
+
+/usr/include/c++/11/bits/parse_numbers.h:
+
+/usr/include/c++/11/ctime:
+
+/usr/include/c++/11/limits:
+
+/usr/include/c++/11/ratio:
 
 /usr/include/c++/11/bits/stl_tempbuf.h:
 
@@ -751,6 +764,8 @@ CMakeFiles/server.dir/funciones.cpp.o: ../funciones.cpp \
 /usr/include/asm-generic/errno-base.h:
 
 ../bj_server.cpp:
+
+/usr/include/c++/11/chrono:
 
 /usr/include/x86_64-linux-gnu/bits/wordsize.h:
 
