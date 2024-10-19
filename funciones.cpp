@@ -115,7 +115,7 @@ void rellenarBaraja(vector<Carta> &baraja)
 void mostrarUserData(const map<string, string> userData)
 {    
     auto it = userData.begin();
-    for (int i = 0; it != userData.end() && i < userData.size(); ++i, ++it)
+    for (size_t i = 0; it != userData.end() && i < userData.size(); ++i, ++it)
     {
         /*  [DEBUG] BIEN  */ 
         cout << "Usuario " << i + 1 << ": " << it->first << "\n"
@@ -155,7 +155,7 @@ bool usuarioIsConectado(const vector<Usuario> &usuarios, const string username)
 
 int numUsuario(const vector<Usuario> &usuarios, const int socket)
 {
-    for(int i=0; i<usuarios.size(); ++i)
+    for(size_t i=0; i<usuarios.size(); ++i)
     {
         if(usuarios[i].id == socket) return i;
     }
@@ -190,18 +190,21 @@ int calcularValorMano(const std::vector<Carta>& mano) {
 
 int buscarPartidaLibre(const vector<Mesa> &partidas)
 {
-    for(int i=0; i<partidas.size(); ++i)
+    int numPartidas = partidas.size();  // Guardamos el tamaño una vez
+    printf("Numero total de partidas %d\n", numPartidas);
+    for(int i = 0; i < numPartidas; ++i)
     {
         if(partidas[i].estadoPartida == VACIA || partidas[i].estadoPartida == INCOMPLETA){
-            return i;
+            printf("Partida seleccionada %d, con Estado: %d\n", i, partidas[i].estadoPartida);  // Corregido printf
+            return i;  // Devuelve el índice de la partida libre
         }
     }
-    return 0;
+    return -1;  // Devolvemos -1 si no hay partidas libres
 }
 
 void inicializarEstadoPartidas(vector<Mesa> &partidas)
 {
-    for(int i=0; i<partidas.size(); ++i)
+    for(size_t i=0; i<partidas.size(); ++i)
     {
         partidas[i].estadoPartida = VACIA;
     }
@@ -210,7 +213,7 @@ void inicializarEstadoPartidas(vector<Mesa> &partidas)
 
 int miPartida(const vector<Mesa> &partidas, const int socket)
 {
-    for(int i=0; i<partidas.size(); ++i)
+    for(size_t i=0; i<partidas.size(); ++i)
     {
         if((partidas[i].jugador1 == socket) || (partidas[i].jugador2 == socket)){
             return i;
@@ -221,24 +224,45 @@ int miPartida(const vector<Mesa> &partidas, const int socket)
 
 int whoAmI(const vector<Mesa> &partidas, const int socket, const int partida)
 {
-    if(partidas[partida].jugador1 == socket){
-        return 1;
-    } else {
-        return 2;
+    // Check if the partida index is valid
+    int tam = partidas.size();
+    if (partida < 0 || partida >= tam) {
+        printf("[ERROR] Invalid partida index.\n");
+        return -1; // Return an error code for invalid partida
     }
+
+    // Determine which player the socket corresponds to
+    if (partidas[partida].jugador1 == socket) {
+        return 1; // Player 1
+    } else if (partidas[partida].jugador2 == socket) {
+        return 2; // Player 2
+    }
+
+    return 0; // Return 0 if the socket does not match either player
 }
+
 
 bool finPartida(const vector<Mesa> &partidas, vector<Usuario> &usuarios, const int partida)
 {
     int jug1 = numUsuario(usuarios, partidas[partida].jugador1);
     int jug2 = numUsuario(usuarios, partidas[partida].jugador2);
 
-    if(usuarios[jug1].estado == WAITING && usuarios[jug2].estado == WAITING){
-        return true;
-    } else {
-        return false;
+    printf("\n\n[DEBUG] partidas[partida].jugador1 = %d.\n[DEBUG] partidas[partida].jugador2 = %d.\n\n", jug1, jug2);
+
+    int tamUsuarios = usuarios.size();
+
+    if (jug1 < 0 || jug1 >= tamUsuarios || jug2 < 0 || jug2 >= tamUsuarios) {
+        printf("[ERROR] Invalid user index.\n");
+        return false; // or handle the error appropriately
     }
+
+    printf("[DEBUG] Funcion finPartida\n Partida: %d\n  + Jugador1: %s\n    > Socket: %d\n    > NumUsuario: %d\n    > Estado: %d\n  + Jugador2: %s\n    > Socket: %d\n    > NumUsuario: %d\n    > Estado: %d\n",
+        partida,usuarios[jug1].username.c_str(), usuarios[jug1].id, jug1, usuarios[jug1].estado,
+        usuarios[jug2].username.c_str(), usuarios[jug2].id, jug2, usuarios[jug2].estado);  
+
+    return (usuarios[jug1].estado == WAITING && usuarios[jug2].estado == WAITING);
 }
+
 
 void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuario> &usuarios)
 {
@@ -270,7 +294,7 @@ void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuar
         
         memset(buffer, 0, sizeof(buffer));
         sprintf(buffer, "+Ok. Jugador <%s> ha ganado la partida. Tus cartas: %d, las de tu rival: %d", 
-                usuarios[numUsuario(usuarios, partidas[part].jugador2)].username,
+                usuarios[numUsuario(usuarios, partidas[part].jugador2)].username.c_str(),
                 mano1, mano2);
         send(jug1,buffer,sizeof(buffer),0);
 
@@ -289,7 +313,7 @@ void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuar
 
         memset(buffer, 0, sizeof(buffer));
         sprintf(buffer, "+Ok. Jugador <%s> ha ganado la partida. Tus cartas: %d, las de tu rival: %d", 
-                usuarios[numUsuario(usuarios, partidas[part].jugador1)].username,
+                usuarios[numUsuario(usuarios, partidas[part].jugador1)].username.c_str(),
                 mano2, mano1);
         send(jug2,buffer,sizeof(buffer),0);
 
@@ -304,7 +328,7 @@ void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuar
 
         memset(buffer, 0, sizeof(buffer));
         sprintf(buffer, "+Ok. Jugador <%s> ha ganado la partida. Tus cartas: %d, las de tu rival: %d", 
-                usuarios[numUsuario(usuarios, partidas[part].jugador1)].username,
+                usuarios[numUsuario(usuarios, partidas[part].jugador1)].username.c_str(),
                 mano2, mano1);
         send(jug2,buffer,sizeof(buffer),0);
 
@@ -315,7 +339,7 @@ void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuar
 
         memset(buffer, 0, sizeof(buffer));
         sprintf(buffer, "+Ok. Jugador <%s> ha ganado la partida. Tus cartas: %d, las de tu rival: %d", 
-                usuarios[numUsuario(usuarios, partidas[part].jugador2)].username,
+                usuarios[numUsuario(usuarios, partidas[part].jugador2)].username.c_str(),
                 mano1, mano2);
         send(jug1,buffer,sizeof(buffer),0);
 
@@ -330,11 +354,20 @@ void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuar
     if(mano1 == mano2){
         memset(buffer, 0, sizeof(buffer));
         sprintf(buffer, "+Ok. Jugador <%s> y Jugador <%s> habeis empatado la partida.", 
-                usuarios[numUsuario(usuarios, partidas[part].jugador1)].username,
-                usuarios[numUsuario(usuarios, partidas[part].jugador2)].username);
+                usuarios[numUsuario(usuarios, partidas[part].jugador1)].username.c_str(),
+                usuarios[numUsuario(usuarios, partidas[part].jugador2)].username.c_str());
         send(jug1,buffer,sizeof(buffer),0);
         send(jug2,buffer,sizeof(buffer),0);
 
         return;
+    }
+}
+
+void mostrarDatosPartidas(const vector<Mesa> &partidas)
+{
+    printf("[DEBUG] Partidas:");
+    for(size_t i=0; i<partidas.size(); ++i)
+    {
+        printf("    Partida: %ld\n   > Estado: %d\n", i, partidas[i].estadoPartida);
     }
 }
