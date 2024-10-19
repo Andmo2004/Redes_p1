@@ -9,6 +9,7 @@
 using namespace std;
 
 int numUsuario(const vector<Usuario> &usuarios, const int socket);
+int buscarPartidaLibre(const vector<Mesa> &partidas);
 int calcularValorMano(const std::vector<Carta>& mano);
 bool existe_usuario(const string &username, const map<string, string> &userData);
 bool contrasenia_correcta(const string &user, const string &password, const map<string, string> &userData);
@@ -19,5 +20,6 @@ void rellenarVectorUsuario(map<string, string> &userData);
 void rellenarFicheroUsuario(const map<string, string> &userData);
 void mostrarUserData(const map<string, string> userData);
 void sacarUsuarioDesconectado(vector<Usuario> &usuarios, const int socket);
+void inicializarEstadoPartidas(vector<Mesa> &partidas);
 
 #endif

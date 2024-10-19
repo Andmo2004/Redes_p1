@@ -28,27 +28,18 @@ using namespace std;
 
 int main (){
     
-    vector<Carta> baraja1;
 
-    vector<Usuario> usuarios;
+
     vector<Mesa> partidas;
-    
     partidas.resize(10);
+    inicializarEstadoPartidas(partidas);
+    
+    vector<Usuario> usuarios;
     usuarios.resize(MAX_CLIENTS);
     
     map<string, string> userData;
     rellenarVectorUsuario(userData);
 
-    // auto it = userData.begin();
-    // for (int i = 0; it != userData.end() && i < userData.size(); ++i, ++it)
-    // {
-    //     usuarios[i].username += it->first;
-    //     usuarios[i].password += it->second;
-
-    //     /*  [DEBUG] BIEN  */ 
-    //     // cout << "Usuario " << i + 1 << ": " << usuarios[i].username << "\n"
-    //     //     << "Contraseña: " << usuarios[i].password << endl; 
-    // }
     mostrarUserData(userData);
 
 

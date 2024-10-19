@@ -12,21 +12,25 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClie
 
 using namespace std;
 
+/*
+    Estado 0 = conectado
+    Estado 1 = Usuario correcto
+    Estado 2 = Usuario validado
+    Estado 3 = Iniciar partida
+    Estado 4 = Jugando
+    Estado 5 = Waiting
+*/
 const int CONECTADO=0;
+
 const int USUARIO_CORRECTO=1;
 const int USUARIO_VALIDADO=2;
+
 const int INICIAR_PARTIDA =3;
 const int JUGANDO=4;
-
+const int WAITING=5;
 
 struct Usuario{
-    /*
-        Estado 0 = conectado
-        Estado 1 = Usuario correcto
-        Estado 2 = Usuario validado
-        Estado 3 = Iniciar partida
-        Estado 4 = Jugando
-    */
+
     int estado; 
     string username;
     string password;
@@ -38,11 +42,24 @@ struct Carta{
     int numero;
 };
 
+/*
+    Estado 0: Incompleta
+    Estado 1: Jugando
+*/
+
+const int VACIA=0;
+const int INCOMPLETA=1;
+const int EMPEZADA=2;
+
 struct Mesa{
     int estadoPartida;
     int jugador1;
     int jugador2;
+    int manoJugador1;
+    int manoJugador2;
     vector<Carta> baraja;
+    vector<Carta> cartasJugador1;
+    vector<Carta> cartasJugador2;
 };
 
 #endif

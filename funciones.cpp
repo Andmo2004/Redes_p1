@@ -181,3 +181,22 @@ int calcularValorMano(const std::vector<Carta>& mano) {
 
     return valorTotal;
 }
+
+int buscarPartidaLibre(const vector<Mesa> &partidas)
+{
+    for(int i=0; i<partidas.size(); ++i)
+    {
+        if(partidas[i].estado == VACIA || partidas[i].estado == INCOMPLETA){
+            return i;
+        }
+    }
+    return 0;
+}
+
+void inicializarEstadoPartidas(vector<Mesa> &partidas)
+{
+    for(int i=0; i<partidas.size(); ++i)
+    {
+        partidas[i].estado = VACIA;
+    }
+}
