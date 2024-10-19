@@ -204,10 +204,11 @@ int main (){
                                 if(usuarios[k].estado == CONECTADO){
                                     char username[50], password[50];
                                     if(sscanf(buffer, "REGISTRO -u %s -p %s", username, password) == 2) {
-                                        if(updateUserData(string(username), string(password), userData)) {
+                                        if(updateUserData(string(username), string(password), userData)==true) {
                                             
                                             //send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario registrado correctamente, sal e inicia sesion\n");
-                                            memset(buffer, 0, sizeof(buffer));
+                                            //memset(buffer, 0, sizeof(buffer));
+                                            bzero(buffer,sizeof(buffer));
                                             strcpy(buffer, "+Ok. Usuario registrado correctamente, sal e inicia sesion\n");
                                             send(usuarios[k].id,buffer,sizeof(buffer),0);
 
@@ -215,6 +216,7 @@ int main (){
                                             //userData.insert(make_pair(string(username), string(password)));
                                             mostrarUserData(userData);
                                             salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
+                                            rellenarFicheroUsuario(userData);
                                             //sacarUsuarioDesconectado(usuarios, i);
                                             
                                         } else {

@@ -78,9 +78,9 @@ bool updateUserData(const string &username, const string &password, map<string, 
     } else {
         // Si el usuario no existe, lo agregamos al mapa
         userData[username] = password;
-        rellenarFicheroUsuario(userData);
         return true; 
     }   
+        //rellenarFicheroUsuario(userData);
 }
 
 
