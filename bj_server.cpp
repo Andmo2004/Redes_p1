@@ -191,8 +191,7 @@ int main (){
 
                     } else { // Manejo de clientes conectados
                         //bzero(buffer, sizeof(buffer));
-                        memset(buffer, 0, sizeof(buffer));
-
+                        memset(buffer, 0,sizeof(buffer));
                         recibidos = recv(i, buffer, sizeof(buffer), 0);
                         
                         if(recibidos > 0) {
@@ -212,7 +211,7 @@ int main (){
                                             send(i,buffer,sizeof(buffer),0);
 
 
-                                            userData.insert(make_pair(string(username), string(password)));
+                                            //userData.insert(make_pair(string(username), string(password)));
                                             mostrarUserData(userData);
                                             salirCliente(i, &readfds, &numClientes, arrayClientes);
                                             //sacarUsuarioDesconectado(usuarios, i);

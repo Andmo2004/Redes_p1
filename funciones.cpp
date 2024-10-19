@@ -20,7 +20,7 @@ void rellenarFicheroUsuario(const map<string, string> &userData){
     fich.open("Users_Passwords.txt");
 
     for (const auto &entry : userData) {
-        fich << entry.first << "\t" << entry.second; // entry.first es el username y entry.second es el password
+        fich << entry.first << "\t" << entry.second<<"\n"; // entry.first es el username y entry.second es el password
     }
     
     fich.close();
@@ -186,7 +186,7 @@ int buscarPartidaLibre(const vector<Mesa> &partidas)
 {
     for(int i=0; i<partidas.size(); ++i)
     {
-        if(partidas[i].estado == VACIA || partidas[i].estado == INCOMPLETA){
+        if(partidas[i].estadoPartida == VACIA || partidas[i].estadoPartida == INCOMPLETA){
             return i;
         }
     }
@@ -197,6 +197,6 @@ void inicializarEstadoPartidas(vector<Mesa> &partidas)
 {
     for(int i=0; i<partidas.size(); ++i)
     {
-        partidas[i].estado = VACIA;
+        partidas[i].estadoPartida = VACIA;
     }
 }
