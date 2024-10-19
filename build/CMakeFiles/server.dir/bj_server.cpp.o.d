@@ -1,5 +1,5 @@
 CMakeFiles/server.dir/bj_server.cpp.o: \
- /home/andmo/Escritorio/Redes/github/Redes_p1/bj_server.cpp \
+ /mnt/c/Users/Lenovo\ ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1/bj_server.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/11/iostream \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -210,9 +210,9 @@ CMakeFiles/server.dir/bj_server.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/struct_sigstack.h \
  /usr/include/x86_64-linux-gnu/bits/sigthread.h \
  /usr/include/x86_64-linux-gnu/bits/signal_ext.h /usr/include/arpa/inet.h \
- /home/andmo/Escritorio/Redes/github/Redes_p1/bj_server.hpp \
+ /mnt/c/Users/Lenovo\ ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1/bj_server.hpp \
  /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_uninitialized.h \
  /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc \
- /home/andmo/Escritorio/Redes/github/Redes_p1/funciones.hpp
+ /mnt/c/Users/Lenovo\ ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1/funciones.hpp

@@ -151,6 +151,7 @@ int main (){
 
                                 usuarios[numClientes].estado = CONECTADO;
                                 usuarios[numClientes].id = new_sd;
+                              
                                 
                                 numClientes++;
 

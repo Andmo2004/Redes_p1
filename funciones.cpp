@@ -157,10 +157,12 @@ int numUsuario(const vector<Usuario> &usuarios, const int socket)
 {
     for(size_t i=0; i<usuarios.size(); ++i)
     {
-        if(usuarios[i].id == socket) return i;
+        if(usuarios[i].id == socket) return (int)i;
     }
+    
+    printf("[DEBUG] Usuario con socket %d no encontrado.\n", socket);
 
-    return 0;
+    return -1;
 }
 
 // Función para calcular el valor de una mano
@@ -247,12 +249,12 @@ bool finPartida(const vector<Mesa> &partidas, vector<Usuario> &usuarios, const i
     int jug1 = numUsuario(usuarios, partidas[partida].jugador1);
     int jug2 = numUsuario(usuarios, partidas[partida].jugador2);
 
-    printf("\n\n[DEBUG] partidas[partida].jugador1 = %d.\n[DEBUG] partidas[partida].jugador2 = %d.\n\n", jug1, jug2);
+    printf("\n\n[DEBUG] partidas[partida].jugador1 = %d.\n[DEBUG] partidas[partida].jugador2 = %d.\n\n",  partidas[partida].jugador1,  partidas[partida].jugador2);
 
     int tamUsuarios = usuarios.size();
 
     if (jug1 < 0 || jug1 >= tamUsuarios || jug2 < 0 || jug2 >= tamUsuarios) {
-        printf("[ERROR] Invalid user index.\n");
+        printf("[ERROR] Invalid user index FIN PARTIDA.\n");
         return false; // or handle the error appropriately
     }
 

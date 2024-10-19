@@ -1,4 +1,4 @@
-# Install script for directory: /home/andmo/Escritorio/Redes/github/Redes_p1
+# Install script for directory: /mnt/c/Users/Lenovo ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/andmo/Escritorio/Redes/github/Redes_p1/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/mnt/c/Users/Lenovo ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

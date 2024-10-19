@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/andmo/Escritorio/Redes/github/Redes_p1/.
+CXX_INCLUDES = -I"/mnt/c/Users/Lenovo ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1/."
 
 CXX_FLAGS = -Wall -O2 -std=gnu++11
 

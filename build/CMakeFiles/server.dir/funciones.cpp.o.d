@@ -1,5 +1,5 @@
 CMakeFiles/server.dir/funciones.cpp.o: \
- /home/andmo/Escritorio/Redes/github/Redes_p1/funciones.cpp \
+ /mnt/c/Users/Lenovo\ ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1/funciones.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/11/iostream \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -199,5 +199,5 @@ CMakeFiles/server.dir/funciones.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/unistd.h \
  /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
  /usr/include/linux/close_range.h \
- /home/andmo/Escritorio/Redes/github/Redes_p1/funciones.hpp \
- /home/andmo/Escritorio/Redes/github/Redes_p1/bj_server.hpp
+ /mnt/c/Users/Lenovo\ ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1/funciones.hpp \
+ /mnt/c/Users/Lenovo\ ThinkPad/Documents/Universidad/Curso3.1ºcuatri/Redes/Redes_p1/bj_server.hpp
