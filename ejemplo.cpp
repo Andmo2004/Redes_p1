@@ -1,6 +1,6 @@
 
 
-if(buscar_palabra(buffer, "INICIAR-PARTIDA")) {
+if(strcmp(buffer, "INICIAR-PARTIDA\n") == 0){
     int k = numUsuario(usuarios, i);
     if(usuarios[k].estado == USUARIO_VALIDADO){
         usuarios[k].estado = INICIAR_PARTIDA;
@@ -80,13 +80,18 @@ if(buscar_palabra(buffer, "INICIAR-PARTIDA")) {
     }
 }
 
-if(buscar_palabra(buffer, "PEDIR-CARTA")){
+if(strcmp(buffer, "PEDIR-CARTA\n") == 0){
     int k = numUsuario(usuarios, i);
-    if(usuarios[k].estado == INICIAR_PARTIDA){
+    if(usuarios[k].estado == JUGANDO){
+        int partUsuario == miPartida(partidas, i);
+        
+        if(partidas[partUsuario].manoJugador1)
+
+
 
     } else {
         memset(buffer, 0, sizeof(buffer));
-        strcpy(buffer, "-Err. El estado del usuario no corresponde a Correcto\n");
+        strcpy(buffer, "-Err. El estado del usuario no corresponde a la partida\n");
         send(i,buffer,sizeof(buffer),0);        
     }
 }

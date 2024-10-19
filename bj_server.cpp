@@ -200,6 +200,7 @@ int main (){
                             if(buscar_palabra(buffer, "REGISTRO")) {
                                 /* HACER UN BUCLE QUE BUSQUE EL USUARIOS[K].id == i */
                                 int k = numUsuario(usuarios, i);
+                                usuarios[k].id = i;
                                 if(usuarios[k].estado == CONECTADO){
                                     char username[50], password[50];
                                     if(sscanf(buffer, "REGISTRO -u %s -p %s", username, password) == 2) {
@@ -208,37 +209,37 @@ int main (){
                                             //send_to_user(i, buffer, sizeof(buffer), "+Ok. Usuario registrado correctamente, sal e inicia sesion\n");
                                             memset(buffer, 0, sizeof(buffer));
                                             strcpy(buffer, "+Ok. Usuario registrado correctamente, sal e inicia sesion\n");
-                                            send(i,buffer,sizeof(buffer),0);
+                                            send(usuarios[k].id,buffer,sizeof(buffer),0);
 
 
                                             //userData.insert(make_pair(string(username), string(password)));
                                             mostrarUserData(userData);
-                                            salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                            salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
                                             //sacarUsuarioDesconectado(usuarios, i);
                                             
                                         } else {
                                             //send_to_user(i, buffer, sizeof(buffer), "-Err. El usuario ya esta registrado\n");
                                             memset(buffer, 0, sizeof(buffer));
                                             strcpy(buffer, "-Err. El usuario ya esta registrado\n");
-                                            send(i,buffer,sizeof(buffer),0);
+                                            send(usuarios[k].id,buffer,sizeof(buffer),0);
 
-                                            salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                            salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
                                             //sacarUsuarioDesconectado(usuarios, i);
                                         }
                                     } else {
                                         //send_to_user(i, buffer, sizeof(buffer), "-Err. La informacion no se ha introducido correctamente\n");
                                         memset(buffer, 0, sizeof(buffer));
                                         strcpy(buffer, "-Err. La informacion no se ha introducido correctamente\n");
-                                        send(i,buffer,sizeof(buffer),0);
+                                        send(usuarios[k].id,buffer,sizeof(buffer),0);
 
-                                        salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                        salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
                                         //sacarUsuarioDesconectado(usuarios, i);
                                     }
                                 } else {
                                     //send_to_user(i, buffer, sizeof(buffer), "-Err. El estado del usuario no corresponde al Registro\n");
                                     memset(buffer, 0, sizeof(buffer));
                                     strcpy(buffer, "-Err. El estado del usuario no corresponde al Registro\n");
-                                    send(i,buffer,sizeof(buffer),0);
+                                    send(usuarios[k].id,buffer,sizeof(buffer),0);
                                 }
                             }
 

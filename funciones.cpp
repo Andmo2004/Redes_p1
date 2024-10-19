@@ -199,4 +199,16 @@ void inicializarEstadoPartidas(vector<Mesa> &partidas)
     {
         partidas[i].estadoPartida = VACIA;
     }
+
+}
+
+int miPartida(const vector<Mesa> &partidas, const int socket)
+{
+    for(int i=0; i<partidas.size(); ++i)
+    {
+        if((partidas[i].jugador1 == socket) || (partidas[i].jugador2 == socket)){
+            return i;
+        }
+    }
+    return 0;
 }

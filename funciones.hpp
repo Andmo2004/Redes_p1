@@ -9,6 +9,7 @@
 using namespace std;
 
 int numUsuario(const vector<Usuario> &usuarios, const int socket);
+int miPartida(const vector<Mesa> &partidas, const int socket);
 int buscarPartidaLibre(const vector<Mesa> &partidas);
 int calcularValorMano(const std::vector<Carta>& mano);
 bool existe_usuario(const string &username, const map<string, string> &userData);
