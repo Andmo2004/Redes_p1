@@ -18,11 +18,13 @@ bool contrasenia_correcta(const string &user, const string &password, const map<
 bool usuarioIsConectado(const vector<Usuario> &usuarios, const string username);
 bool buscar_palabra(const char *cadena, const char *palabra);
 bool updateUserData(const string &username, const string &password, map<string, string> &userData);
+bool finPartida(const vector<Mesa> &partidas, vector<Usuario> &usuarios, const int partida);
 void rellenarVectorUsuario(map<string, string> &userData);
 void rellenarFicheroUsuario(const map<string, string> &userData);
 void rellenarBaraja(vector<Carta> &baraja);
 void mostrarUserData(const map<string, string> userData);
 void sacarUsuarioDesconectado(vector<Usuario> &usuarios, const int socket);
 void inicializarEstadoPartidas(vector<Mesa> &partidas);
+void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuario> &usuarios);
 
 #endif

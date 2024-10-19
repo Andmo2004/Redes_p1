@@ -7,6 +7,12 @@
 #include <algorithm>
 
 #include <time.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+
 
 #include "funciones.hpp"
 #include "bj_server.hpp"
@@ -219,5 +225,116 @@ int whoAmI(const vector<Mesa> &partidas, const int socket, const int partida)
         return 1;
     } else {
         return 2;
+    }
+}
+
+bool finPartida(const vector<Mesa> &partidas, vector<Usuario> &usuarios, const int partida)
+{
+    int jug1 = numUsuario(usuarios, partidas[partida].jugador1);
+    int jug2 = numUsuario(usuarios, partidas[partida].jugador2);
+
+    if(usuarios[jug1].estado == WAITING && usuarios[jug2].estado == WAITING){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuario> &usuarios)
+{
+    char buffer[250];
+
+    int puntos1 = calcularValorMano(partidas[part].cartasJugador1);
+    partidas[part].manoJugador1 = puntos1; 
+    int mano1 = partidas[part].manoJugador1;
+
+    int puntos2 = calcularValorMano(partidas[part].cartasJugador2);
+    partidas[part].manoJugador2 = puntos2; 
+    int mano2 = partidas[part].manoJugador2;
+
+    int jug1 = usuarios[numUsuario(usuarios, partidas[part].jugador1)].id;
+    int jug2 = usuarios[numUsuario(usuarios, partidas[part].jugador2)].id;
+
+    //MAYOR QUE 21 AMBOS JUGADORES
+    if(mano1 > 21 && mano2 > 21){
+
+        memset(buffer, 0, sizeof(buffer));
+        strcpy(buffer, "+Ok. No hay ganadores...\n");
+        send(jug1,buffer,sizeof(buffer),0);  
+        send(jug2,buffer,sizeof(buffer),0);
+
+        return;
+    }
+    //MAYOR QUE 21 JUG1
+    if(mano1 > 21 && mano2 <= 21){
+        
+        memset(buffer, 0, sizeof(buffer));
+        sprintf(buffer, "+Ok. Jugador <%s> ha ganado la partida. Tus cartas: %d, las de tu rival: %d", 
+                usuarios[numUsuario(usuarios, partidas[part].jugador2)].username,
+                mano1, mano2);
+        send(jug1,buffer,sizeof(buffer),0);
+
+        memset(buffer, 0, sizeof(buffer));
+        sprintf(buffer, "+Ok. Has ganado la partida. Tus cartas: %d, las de tu rival: %d", mano2, mano1);
+        send(jug2,buffer,sizeof(buffer),0);
+
+        return;
+    }
+    //MAYOR QUE 21 JUG2
+    if(mano1 <= 21 && mano2 > 21){
+
+        memset(buffer, 0, sizeof(buffer));
+        sprintf(buffer, "+Ok. Has ganado la partida. Tus cartas: %d, las de tu rival: %d", mano1, mano2);
+        send(jug1,buffer,sizeof(buffer),0);
+
+        memset(buffer, 0, sizeof(buffer));
+        sprintf(buffer, "+Ok. Jugador <%s> ha ganado la partida. Tus cartas: %d, las de tu rival: %d", 
+                usuarios[numUsuario(usuarios, partidas[part].jugador1)].username,
+                mano2, mano1);
+        send(jug2,buffer,sizeof(buffer),0);
+
+        return;
+    }
+    //JUG 1 GANA
+    if(mano1 > mano2){
+
+        memset(buffer, 0, sizeof(buffer));
+        sprintf(buffer, "+Ok. Has ganado la partida. Tus cartas: %d, las de tu rival: %d", mano1, mano2);
+        send(jug1,buffer,sizeof(buffer),0);
+
+        memset(buffer, 0, sizeof(buffer));
+        sprintf(buffer, "+Ok. Jugador <%s> ha ganado la partida. Tus cartas: %d, las de tu rival: %d", 
+                usuarios[numUsuario(usuarios, partidas[part].jugador1)].username,
+                mano2, mano1);
+        send(jug2,buffer,sizeof(buffer),0);
+
+        return;
+    }
+    //JUG 2 GANA
+    if(mano1 < mano2){
+
+        memset(buffer, 0, sizeof(buffer));
+        sprintf(buffer, "+Ok. Jugador <%s> ha ganado la partida. Tus cartas: %d, las de tu rival: %d", 
+                usuarios[numUsuario(usuarios, partidas[part].jugador2)].username,
+                mano1, mano2);
+        send(jug1,buffer,sizeof(buffer),0);
+
+        memset(buffer, 0, sizeof(buffer));
+        sprintf(buffer, "+Ok. Has ganado la partida. Tus cartas: %d, las de tu rival: %d", mano2, mano1);
+        send(jug2,buffer,sizeof(buffer),0);
+
+        return;
+
+    }
+    //EMPATE
+    if(mano1 == mano2){
+        memset(buffer, 0, sizeof(buffer));
+        sprintf(buffer, "+Ok. Jugador <%s> y Jugador <%s> habeis empatado la partida.", 
+                usuarios[numUsuario(usuarios, partidas[part].jugador1)].username,
+                usuarios[numUsuario(usuarios, partidas[part].jugador2)].username);
+        send(jug1,buffer,sizeof(buffer),0);
+        send(jug2,buffer,sizeof(buffer),0);
+
+        return;
     }
 }
