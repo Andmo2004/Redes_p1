@@ -267,7 +267,7 @@ int miPartida(const vector<Mesa> &partidas, const int socket)
     return 0;
 }
 
-int whoAmI(const vector<Mesa> &partidas, const int socket, const int partida)
+int whoAmI(const vector<Mesa> &partidas, const int numUsuario, const int partida)
 {
     // Check if the partida index is valid
     int tam = partidas.size();
@@ -276,10 +276,10 @@ int whoAmI(const vector<Mesa> &partidas, const int socket, const int partida)
         return -1; // Return an error code for invalid partida
     }
 
-    // Determine which player the socket corresponds to
-    if (partidas[partida].jugador1 == socket) {
+    // Determine which player the numUsuario corresponds to
+    if (partidas[partida].jugador1 == numUsuario) {
         return 1; // Player 1
-    } else if (partidas[partida].jugador2 == socket) {
+    } else if (partidas[partida].jugador2 == numUsuario) {
         return 2; // Player 2
     }
 
@@ -414,5 +414,39 @@ void mostrarDatosPartidas(const vector<Mesa> &partidas)
     for(size_t i=0; i<partidas.size(); ++i)
     {
         printf("    Partida: %ld\n   > Estado: %d\n", i, partidas[i].estadoPartida);
+    }
+}
+
+string cadenaDeEstado(const int estado)
+{
+    string status;
+    if(estado == 0){
+        status = "CONECTADO";
+    }
+    if(estado == 1){
+        status = "USUARIO INTRODUCIDO";
+    }
+    if(estado == 2){
+        status = "CONTRASEÑA CORRECTA";
+    }
+    if(estado == 3){
+        status = "BUSCANDO PARTIDA";
+    }
+    if(estado == 4){
+        status = "EN PARTIDA";
+    }
+    if(estado == 5){
+        status = "EN ESPERA";
+    }
+    return status;
+}
+
+void mostrarCartasdelJugador(const vector<Carta> &mano)
+{
+    printf("\n[DEBUG] Cartas:\n");
+    for(size_t i = 0; i < mano.size(); ++i)
+    {
+        printf("Carta %ld: [%s, %d]\n",
+            i, mano[i].palo.c_str(), mano[i].numero);
     }
 }

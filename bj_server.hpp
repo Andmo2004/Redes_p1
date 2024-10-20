@@ -28,7 +28,7 @@ const int USUARIO_VALIDADO=2;
 const int INICIAR_PARTIDA =3;
 const int JUGANDO=4;
 const int WAITING=5;
-// const int FINALIZADO=6;
+const int FINALIZADO=6;
 
 struct Usuario{
 

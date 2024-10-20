@@ -182,7 +182,31 @@ int main (){
                         if (fgets(buffer, sizeof(buffer), stdin) == NULL){
                             perror("Error al leer la entrada");
                         }
-                        
+
+                        if(strcmp(buffer, "USERS\n") == 0){
+                            printf("[DEBUG] Usuarios:\n");
+                            for(size_t i=0; i<usuarios.size(); ++i)
+                            {
+                                if(usuarios[i].id > 0){
+                                    printf(" - Usuario: %s\n    + Socket: %d\n    + Estado %s => %d\n",
+                                        usuarios[i].username.c_str(), usuarios[i].id, cadenaDeEstado(usuarios[i].estado).c_str(), usuarios[i].estado);
+                                }
+                            }
+                        }
+
+                        if(strcmp(buffer, "STATUS\n") == 0){
+                            printf("[DEBUG] Partidas:\n");
+                            for(size_t i=0; i<partidas.size(); ++i)
+                            {
+                                if(partidas[i].estadoPartida == EMPEZADA){
+                                    printf("- Partida: %ld\n   + Estado: %d\n   + Jugadores: %d, %d\n   + Manos:\n      - Jugador1: %d, numCartas: %ld\n      - Jugador2: %d, numCartas: %ld\n\n",
+                                            i, partidas[i].estadoPartida, partidas[i].jugador1, partidas[i].jugador2, 
+                                            partidas[i].manoJugador1, partidas[i].cartasJugador1.size(),
+                                            partidas[i].manoJugador2, partidas[i].cartasJugador2.size());
+                                }
+                            }
+                        }
+
                         if(strcmp(buffer, "SALIR\n") == 0) {
                             int conected = numUsuariosConectados(usuarios);
                             //printf("[DEBUG] entra en SALIR\nNumero de usuarios %d\n\n", conected);
@@ -372,9 +396,9 @@ int main (){
                                     usuarios[k].estado = INICIAR_PARTIDA;
                                     //printf("Iniciando partida, estado: %d\n", usuarios[k].estado);
 
-                                    memset(buffer, 0, sizeof(buffer));
-                                    strcpy(buffer, "+Ok. Entrando en la cola para jugar...\n");
-                                    send(i, buffer, strlen(buffer), 0);  // Cambiado a strlen(buffer)
+                                    // memset(buffer, 0, sizeof(buffer));
+                                    // strcpy(buffer, "+Ok. Entrando en la cola para jugar...\n");
+                                    // send(i, buffer, strlen(buffer), 0);  // Cambiado a strlen(buffer)
 
                                     //printf("[DEBUG] Funcion buscarPartidaLibre\n");
                                     int numPartida = buscarPartidaLibre(partidas);
@@ -400,6 +424,7 @@ int main (){
                                         memset(buffer, 0, sizeof(buffer));
                                         strcpy(buffer, "+Ok. Empieza la partida.\n");
                                         send(usuarios[k].id, buffer, strlen(buffer), 0);  // Cambiado a usuarios[k].id y strlen(buffer)
+                                        send(usuarios[partidas[numPartida].jugador1].id, buffer, strlen(buffer), 0);
 
                                         partidas[numPartida].jugador2 = k;
                                         partidas[numPartida].estadoPartida = EMPEZADA;
@@ -441,19 +466,21 @@ int main (){
                                         memset(buffer, 0, sizeof(buffer));
 
                                         // Enviar cartas al jugador 1
-                                        snprintf(buffer, sizeof(buffer), "TUS-CARTAS:[%s,%d] [%s,%d]. OPONENTE:[%s,%d]",
+                                        snprintf(buffer, sizeof(buffer), "TUS-CARTAS:[%s,%d] [%s,%d]. OPONENTE:[%s,%d]\n + Tienes: %d\n",
                                                     partidas[numPartida].cartasJugador1[0].palo.c_str(), partidas[numPartida].cartasJugador1[0].numero,
                                                     partidas[numPartida].cartasJugador1[1].palo.c_str(), partidas[numPartida].cartasJugador1[1].numero,
-                                                    partidas[numPartida].cartasJugador2[0].palo.c_str(), partidas[numPartida].cartasJugador2[0].numero);
+                                                    partidas[numPartida].cartasJugador2[0].palo.c_str(), partidas[numPartida].cartasJugador2[0].numero,
+                                                    partidas[numPartida].manoJugador1);
                                         send(usuarios[partidas[numPartida].jugador1].id, buffer, strlen(buffer), 0);  // id de jugador1
 
                                         memset(buffer, 0, sizeof(buffer));
 
                                         // Enviar cartas al jugador 2
-                                        snprintf(buffer, sizeof(buffer), "TUS-CARTAS:[%s,%d] [%s,%d]. OPONENTE:[%s,%d]",
+                                        snprintf(buffer, sizeof(buffer), "TUS-CARTAS:[%s,%d] [%s,%d]. OPONENTE:[%s,%d]\n + Tienes: %d\n",
                                                     partidas[numPartida].cartasJugador2[0].palo.c_str(), partidas[numPartida].cartasJugador2[0].numero,
                                                     partidas[numPartida].cartasJugador2[1].palo.c_str(), partidas[numPartida].cartasJugador2[1].numero,
-                                                    partidas[numPartida].cartasJugador1[0].palo.c_str(), partidas[numPartida].cartasJugador1[0].numero);
+                                                    partidas[numPartida].cartasJugador1[0].palo.c_str(), partidas[numPartida].cartasJugador1[0].numero,
+                                                    partidas[numPartida].manoJugador2);
                                         send(usuarios[partidas[numPartida].jugador2].id, buffer, strlen(buffer), 0);  // id de jugador2
                                     }
                                 } else {
@@ -468,7 +495,7 @@ int main (){
                                 int k = numUsuario(usuarios, i);
                                 if(usuarios[k].estado == JUGANDO){
                                     int partUsuario = miPartida(partidas, i);
-                                    if(whoAmI(partidas, i, partUsuario) == 1)
+                                    if(whoAmI(partidas, k, partUsuario) == 1)
                                     {
                                         if(partidas[partUsuario].manoJugador1 > 21){
                                             memset(buffer, 0, sizeof(buffer));
@@ -480,6 +507,8 @@ int main (){
 
                                             partidas[partUsuario].manoJugador1 = calcularValorMano(partidas[partUsuario].cartasJugador1);
                                             int numCartasJugador = partidas[partUsuario].cartasJugador1.size() - 1; 
+
+                                            mostrarCartasdelJugador(partidas[partUsuario].cartasJugador1);
 
                                             memset(buffer, 0, sizeof(buffer));
 
@@ -502,6 +531,8 @@ int main (){
                                             partidas[partUsuario].manoJugador2 = calcularValorMano(partidas[partUsuario].cartasJugador2);
                                             int numCartasJugador = partidas[partUsuario].cartasJugador2.size() - 1; 
 
+                                            mostrarCartasdelJugador(partidas[partUsuario].cartasJugador2);
+
                                             memset(buffer, 0, sizeof(buffer));
 
                                             sprintf(buffer, "+Ok.[%s,%d] Tienes: %d",
@@ -523,14 +554,14 @@ int main (){
                                 int k = numUsuario(usuarios, i);
                                 if(usuarios[k].estado == JUGANDO)
                                 {
-                                    usuarios[k].estado = WAITING;
+                                    usuarios[k].estado = FINALIZADO;
                                     int partUsuario = miPartida(partidas, i);
 
                                     //printf("[DEBUG] Partida: %d\n   > Jugador 1: %d\n   > Jugador 2: %d\n   > Estatus: %d\n", 
                                             // partUsuario, partidas[partUsuario].jugador1, partidas[partUsuario].jugador2,
                                             // partidas[partUsuario].estadoPartida);
 
-                                    if(whoAmI(partidas, i, partUsuario) == 1){
+                                    if(whoAmI(partidas, k, partUsuario) == 1){
                                         if(finPartida(partidas, usuarios, partUsuario)){
                                             /*int jug2 = partidas[partUsuario].jugador2;
                                             usuarios[k].estado = USUARIO_VALIDADO;
@@ -576,8 +607,40 @@ int main (){
 
                             /* Salir */
                             if(strcmp(buffer, "SALIR\n") == 0) {
-                                salirCliente(i, &readfds, &numClientes, arrayClientes);
-                                sacarUsuarioDesconectado(usuarios, i);
+                                int k = numUsuario(usuarios, i);
+                                if(usuarios[k].estado == JUGANDO || usuarios[k].estado == FINALIZADO){
+                                    int partUsuario = miPartida(partidas, i);
+
+                                    int jug1 = partidas[partUsuario].jugador1;
+                                    int jug2 = partidas[partUsuario].jugador2;
+                                    int socket = 0;
+
+                                    memset(buffer, 0, sizeof(buffer));
+                                    strcpy(buffer, "+Ok. Tu oponente ha terminado la partida\n");
+
+                                    if(whoAmI(partidas, k, partUsuario) == 1){
+
+                                        usuarios[jug2].estado = USUARIO_VALIDADO;
+                                        socket = usuarios[partidas[partUsuario].jugador2].id;
+                                        salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
+                                    } else {
+                                        usuarios[jug1].estado = USUARIO_VALIDADO;
+                                        socket = usuarios[partidas[partUsuario].jugador1].id;
+                                        salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
+                                    }
+                                    send(socket,buffer,sizeof(buffer),0);
+                                    sacarUsuarioDesconectado(usuarios, i);
+                                    ponerZeroManos(partidas, partUsuario);
+                                }
+                                if(usuarios[k].estado == WAITING){
+                                    int partUsuario = miPartida(partidas, i);
+                                    salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
+                                    sacarUsuarioDesconectado(usuarios, i);
+                                    ponerZeroManos(partidas, partUsuario);
+                                } else {
+                                    salirCliente(i, &readfds, &numClientes, arrayClientes);
+                                    sacarUsuarioDesconectado(usuarios, i);
+                                }
                             }
                         }
 

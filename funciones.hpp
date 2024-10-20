@@ -11,7 +11,7 @@ using namespace std;
 int numUsuario(const vector<Usuario> &usuarios, const int socket);
 int miPartida(const vector<Mesa> &partidas, const int socket);
 int buscarPartidaLibre(const vector<Mesa> &partidas);
-int whoAmI(const vector<Mesa> &partidas, const int socket, const int partida);
+int whoAmI(const vector<Mesa> &partidas, const int numUsuario, const int partida);
 int calcularValorMano(const std::vector<Carta>& mano);
 int numUsuariosConectados(const vector<Usuario> &usuarios);
 bool existe_usuario(const string &username, const map<string, string> &userData);
@@ -30,5 +30,7 @@ void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuar
 void mostrarDatosPartidas(const vector<Mesa> &partidas);
 void inicializarUsuarios(vector<Usuario> &usuarios);
 void ponerZeroManos(vector<Mesa> &partidas, const int part);
+void mostrarCartasdelJugador(const vector<Carta> &mano);
+string cadenaDeEstado(const int estado);
 
 #endif
