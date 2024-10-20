@@ -69,28 +69,28 @@ include CMakeFiles/client.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/client.dir/flags.make
 
-CMakeFiles/client.dir/bj_client.cpp.o: CMakeFiles/client.dir/flags.make
-CMakeFiles/client.dir/bj_client.cpp.o: ../bj_client.cpp
-CMakeFiles/client.dir/bj_client.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andmo/Escritorio/Redes/github/Redes_p1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/client.dir/bj_client.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/bj_client.cpp.o -MF CMakeFiles/client.dir/bj_client.cpp.o.d -o CMakeFiles/client.dir/bj_client.cpp.o -c /home/andmo/Escritorio/Redes/github/Redes_p1/bj_client.cpp
+CMakeFiles/client.dir/bj_client2.cpp.o: CMakeFiles/client.dir/flags.make
+CMakeFiles/client.dir/bj_client2.cpp.o: ../bj_client2.cpp
+CMakeFiles/client.dir/bj_client2.cpp.o: CMakeFiles/client.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/andmo/Escritorio/Redes/github/Redes_p1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/client.dir/bj_client2.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/client.dir/bj_client2.cpp.o -MF CMakeFiles/client.dir/bj_client2.cpp.o.d -o CMakeFiles/client.dir/bj_client2.cpp.o -c /home/andmo/Escritorio/Redes/github/Redes_p1/bj_client2.cpp
 
-CMakeFiles/client.dir/bj_client.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/client.dir/bj_client.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andmo/Escritorio/Redes/github/Redes_p1/bj_client.cpp > CMakeFiles/client.dir/bj_client.cpp.i
+CMakeFiles/client.dir/bj_client2.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/client.dir/bj_client2.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/andmo/Escritorio/Redes/github/Redes_p1/bj_client2.cpp > CMakeFiles/client.dir/bj_client2.cpp.i
 
-CMakeFiles/client.dir/bj_client.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/client.dir/bj_client.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andmo/Escritorio/Redes/github/Redes_p1/bj_client.cpp -o CMakeFiles/client.dir/bj_client.cpp.s
+CMakeFiles/client.dir/bj_client2.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/client.dir/bj_client2.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/andmo/Escritorio/Redes/github/Redes_p1/bj_client2.cpp -o CMakeFiles/client.dir/bj_client2.cpp.s
 
 # Object files for target client
 client_OBJECTS = \
-"CMakeFiles/client.dir/bj_client.cpp.o"
+"CMakeFiles/client.dir/bj_client2.cpp.o"
 
 # External object files for target client
 client_EXTERNAL_OBJECTS =
 
-../client: CMakeFiles/client.dir/bj_client.cpp.o
+../client: CMakeFiles/client.dir/bj_client2.cpp.o
 ../client: CMakeFiles/client.dir/build.make
 ../client: CMakeFiles/client.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/andmo/Escritorio/Redes/github/Redes_p1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ../client"

@@ -37,6 +37,7 @@ int main (){
     
     vector<Usuario> usuarios;
     usuarios.resize(MAX_CLIENTS);
+    inicializarUsuarios(usuarios);
     
     map<string, string> userData;
     rellenarVectorUsuario(userData);
@@ -183,19 +184,43 @@ int main (){
                         }
                         
                         if(strcmp(buffer, "SALIR\n") == 0) {
-                            for(j = 0; j < numClientes; j++) {
+                            int conected = numUsuariosConectados(usuarios);
+                            printf("[DEBUG] entra en SALIR\nNumero de usuarios %d\n\n", conected);
 
-                                //send_to_user(arrayClientes[j], buffer, sizeof(buffer), "+Ok. Desconexión servidor\n");
-                                memset(buffer, 0, sizeof(buffer));
-                                strcpy(buffer, "+Ok. Desconexión servidor\n");
-                                send(arrayClientes[j],buffer,sizeof(buffer),0);
+                            // Primero, envía el mensaje a todos los usuarios sin desconectarlos
+                            for(int k = 0; k < conected; ++k) {
+                                char bufferSalir[250];
+                                printf("[DEBUG] entra en bucle 1: %d\n", k);
+                                memset(bufferSalir, 0, sizeof(bufferSalir));
+                                strcpy(bufferSalir, "+Ok. Desconexión servidor\n");
 
+                                printf("[DEBUG] antes del send\nUsuario %d, socket: %d\n", k, usuarios[k].id);
+                                
+                                if (send(usuarios[k].id, bufferSalir, sizeof(bufferSalir), 0) == -1) {
+                                    perror("Error al enviar mensaje de desconexión");
+                                }
+
+                                printf("[DEBUG] despues del send\nUsuario %d, socket: %d\n", k, usuarios[k].id);
+                            }
+
+                            // Después, desconecta y elimina a los usuarios de manera segura
+                            for(int k = conected - 1; k >= 0; --k) {  // Iteramos hacia atrás para evitar problemas al eliminar
+                                printf("[DEBUG] Cerrando socket usuario: %d\n", k);
+                                salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
+                            }
+
+                            // Finalmente, cerrar los sockets restantes en arrayClientes
+                            for(int j = 0; j < numClientes; j++) {
+                                printf("[DEBUG] entra en bucle 2: %d\n", j);
                                 close(arrayClientes[j]);
                                 FD_CLR(arrayClientes[j], &readfds);
                             }
+
+                            printf("[DEBUG] Sale del bucle\n\n");
                             close(sd);
                             exit(-1);
                         }
+
 
                         // Implementar envío de mensajes a los clientes
 

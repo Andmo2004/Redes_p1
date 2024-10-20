@@ -16,7 +16,7 @@ add_executable(server
 )
 
 add_executable(client
-    bj_client.cpp
+    bj_client2.cpp
 )
 
 # Incluir directorios para los encabezados

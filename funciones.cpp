@@ -51,6 +51,27 @@ void rellenarVectorUsuario(map<string, string> &userData)
     fich.close();
 }
 
+void inicializarUsuarios(vector<Usuario> &usuarios)
+{
+    for(int i=0; i<((int)usuarios.size()); ++i)
+    {
+        usuarios[i].id = -1;
+    }
+    return;
+}
+
+int numUsuariosConectados(const vector<Usuario> &usuarios)
+{
+    int result = 0;
+    for(int i=0; i<((int)usuarios.size()); ++i)
+    {
+        if(usuarios[i].id > 0){
+            result ++;
+        }
+    }
+    return result;
+}
+
 bool existe_usuario(const string &username, const map<string, string> &userData)
 {
     // find() para buscar el username en el map

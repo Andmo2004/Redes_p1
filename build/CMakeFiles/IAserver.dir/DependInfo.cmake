@@ -8,7 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/andmo/Escritorio/Redes/github/Redes_p1/bj_client2.cpp" "CMakeFiles/client.dir/bj_client2.cpp.o" "gcc" "CMakeFiles/client.dir/bj_client2.cpp.o.d"
+  "/home/andmo/Escritorio/Redes/github/Redes_p1/IA_bj_server.cpp" "CMakeFiles/IAserver.dir/IA_bj_server.cpp.o" "gcc" "CMakeFiles/IAserver.dir/IA_bj_server.cpp.o.d"
+  "/home/andmo/Escritorio/Redes/github/Redes_p1/funciones.cpp" "CMakeFiles/IAserver.dir/funciones.cpp.o" "gcc" "CMakeFiles/IAserver.dir/funciones.cpp.o.d"
   )
 
 # Targets to which this target links.
