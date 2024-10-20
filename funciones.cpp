@@ -247,8 +247,8 @@ void inicializarEstadoPartidas(vector<Mesa> &partidas)
 void ponerZeroManos(vector<Mesa> &partidas, const int part)
 {
         partidas[part].estadoPartida = VACIA;
-        // partidas[part].jugador1 = -1;
-        // partidas[part].jugador2 = -1;
+        partidas[part].jugador1 = -1;
+        partidas[part].jugador2 = -1;
         partidas[part].manoJugador1 = 0;
         partidas[part].manoJugador2 = 0;
         partidas[part].cartasJugador1.clear();

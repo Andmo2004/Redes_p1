@@ -407,6 +407,11 @@ int main (){
                                         usuarios[partidas[numPartida].jugador1].estado = JUGANDO;
                                         usuarios[partidas[numPartida].jugador2].estado = JUGANDO;
 
+                                        partidas[numPartida].manoJugador1 = 0;  // Reinicia la mano del jugador 1
+                                        partidas[numPartida].manoJugador2 = 0;  // Reinicia la mano del jugador 2
+                                        partidas[numPartida].cartasJugador1.clear();  // Limpia las cartas del jugador 1
+                                        partidas[numPartida].cartasJugador2.clear();
+
                                         vector<Carta> barajaPartida;
                                         rellenarBaraja(barajaPartida);
 
@@ -468,7 +473,7 @@ int main (){
                                         if(partidas[partUsuario].manoJugador1 > 21){
                                             memset(buffer, 0, sizeof(buffer));
                                             strcpy(buffer, "-Err. Excedido el valor de 21, si intenta solicitar más cartas una vez ya ha superado los 21 puntos, el servidor le devolverá error\n");
-                                            send(i,buffer,sizeof(buffer),0);                
+                                            send(i,buffer,strlen(buffer),0);                
                                         } else {
                                             partidas[partUsuario].cartasJugador1.push_back(partidas[partUsuario].baraja.back());
                                             partidas[partUsuario].baraja.pop_back();
@@ -482,14 +487,14 @@ int main (){
                                                     partidas[partUsuario].cartasJugador1[numCartasJugador].palo.c_str(),
                                                     partidas[partUsuario].cartasJugador1[numCartasJugador].numero,
                                                     partidas[partUsuario].manoJugador1);
-                                            send(usuarios[k].id, buffer, sizeof(buffer), 0);
+                                            send(usuarios[k].id, buffer, strlen(buffer), 0);
                                         }
                                     } else {
 
                                         if(partidas[partUsuario].manoJugador2 > 21){
                                             memset(buffer, 0, sizeof(buffer));
                                             strcpy(buffer, "-Err. Excedido el valor de 21, si intenta solicitar más cartas una vez ya ha superado los 21 puntos, el servidor le devolverá error\n");
-                                            send(i,buffer,sizeof(buffer),0);                
+                                            send(i,buffer,strlen(buffer),0);                
                                         } else {
                                             partidas[partUsuario].cartasJugador2.push_back(partidas[partUsuario].baraja.back());
                                             partidas[partUsuario].baraja.pop_back();
@@ -503,14 +508,14 @@ int main (){
                                                     partidas[partUsuario].cartasJugador2[numCartasJugador].palo.c_str(),
                                                     partidas[partUsuario].cartasJugador2[numCartasJugador].numero,
                                                     partidas[partUsuario].manoJugador2);
-                                            send(usuarios[k].id, buffer, sizeof(buffer), 0);
+                                            send(usuarios[k].id, buffer, strlen(buffer), 0);
                                         }
                                     }
 
                                 } else {
                                     memset(buffer, 0, sizeof(buffer));
                                     strcpy(buffer, "-Err. El estado del usuario no corresponde a la partida\n");
-                                    send(i,buffer,sizeof(buffer),0);        
+                                    send(i,buffer,strlen(buffer),0);        
                                 }
                             }
 
@@ -527,8 +532,13 @@ int main (){
 
                                     if(whoAmI(partidas, i, partUsuario) == 1){
                                         if(finPartida(partidas, usuarios, partUsuario)){
-                                            int jug2 = partidas[partUsuario].jugador2;
+                                            /*int jug2 = partidas[partUsuario].jugador2;
                                             usuarios[k].estado = USUARIO_VALIDADO;
+                                            usuarios[jug2].estado = USUARIO_VALIDADO;*/
+                                            int jug1 = partidas[partUsuario].jugador1;
+                                            int jug2 = partidas[partUsuario].jugador2;
+
+                                            usuarios[jug1].estado = USUARIO_VALIDADO;
                                             usuarios[jug2].estado = USUARIO_VALIDADO;
                                             resultadoPartida(partidas, partUsuario, usuarios);
                                             ponerZeroManos(partidas, partUsuario);
@@ -540,9 +550,14 @@ int main (){
                                         }
                                     } else {
                                         if(finPartida(partidas, usuarios, partUsuario)){
-                                            int jug1 = partidas[partUsuario].jugador1;
+                                            /*int jug1 = partidas[partUsuario].jugador1;
                                             usuarios[k].estado = USUARIO_VALIDADO;
+                                            usuarios[jug1].estado = USUARIO_VALIDADO;*/
+                                            int jug1 = partidas[partUsuario].jugador1;
+                                            int jug2 = partidas[partUsuario].jugador2;
+
                                             usuarios[jug1].estado = USUARIO_VALIDADO;
+                                            usuarios[jug2].estado = USUARIO_VALIDADO;
                                             resultadoPartida(partidas, partUsuario, usuarios);
                                             ponerZeroManos(partidas, partUsuario);
                                         } else {

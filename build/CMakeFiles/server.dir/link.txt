@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/server.dir/bj_server.cpp.o CMakeFiles/server.dir/funciones.cpp.o -o ../server 
