@@ -185,38 +185,38 @@ int main (){
                         
                         if(strcmp(buffer, "SALIR\n") == 0) {
                             int conected = numUsuariosConectados(usuarios);
-                            printf("[DEBUG] entra en SALIR\nNumero de usuarios %d\n\n", conected);
+                            //printf("[DEBUG] entra en SALIR\nNumero de usuarios %d\n\n", conected);
 
                             // Primero, envía el mensaje a todos los usuarios sin desconectarlos
                             for(int k = 0; k < conected; ++k) {
                                 char bufferSalir[250];
-                                printf("[DEBUG] entra en bucle 1: %d\n", k);
+                                //printf("[DEBUG] entra en bucle 1: %d\n", k);
                                 memset(bufferSalir, 0, sizeof(bufferSalir));
                                 strcpy(bufferSalir, "+Ok. Desconexión servidor\n");
 
-                                printf("[DEBUG] antes del send\nUsuario %d, socket: %d\n", k, usuarios[k].id);
+                                //printf("[DEBUG] antes del send\nUsuario %d, socket: %d\n", k, usuarios[k].id);
                                 
                                 if (send(usuarios[k].id, bufferSalir, sizeof(bufferSalir), 0) == -1) {
                                     perror("Error al enviar mensaje de desconexión");
                                 }
 
-                                printf("[DEBUG] despues del send\nUsuario %d, socket: %d\n", k, usuarios[k].id);
+                                //printf("[DEBUG] despues del send\nUsuario %d, socket: %d\n", k, usuarios[k].id);
                             }
 
                             // Después, desconecta y elimina a los usuarios de manera segura
                             for(int k = conected - 1; k >= 0; --k) {  // Iteramos hacia atrás para evitar problemas al eliminar
-                                printf("[DEBUG] Cerrando socket usuario: %d\n", k);
+                                //printf("[DEBUG] Cerrando socket usuario: %d\n", k);
                                 salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
                             }
 
                             // Finalmente, cerrar los sockets restantes en arrayClientes
-                            for(int j = 0; j < numClientes; j++) {
-                                printf("[DEBUG] entra en bucle 2: %d\n", j);
+                            for(j = 0; j < numClientes; j++) {
+                                //printf("[DEBUG] entra en bucle 2: %d\n", j);
                                 close(arrayClientes[j]);
                                 FD_CLR(arrayClientes[j], &readfds);
                             }
 
-                            printf("[DEBUG] Sale del bucle\n\n");
+                            //printf("[DEBUG] Sale del bucle\n\n");
                             close(sd);
                             exit(-1);
                         }
@@ -410,6 +410,9 @@ int main (){
                                         vector<Carta> barajaPartida;
                                         rellenarBaraja(barajaPartida);
 
+                                        partidas[numPartida].manoJugador1 = 0;
+                                        partidas[numPartida].manoJugador2 = 0;
+
                                         partidas[numPartida].baraja = barajaPartida;
 
                                         // DAR DOS CARTAS AL JUGADOR 1
@@ -528,6 +531,7 @@ int main (){
                                             usuarios[k].estado = USUARIO_VALIDADO;
                                             usuarios[jug2].estado = USUARIO_VALIDADO;
                                             resultadoPartida(partidas, partUsuario, usuarios);
+                                            ponerZeroManos(partidas, partUsuario);
 
                                         } else {
                                             memset(buffer, 0, sizeof(buffer));
@@ -540,6 +544,7 @@ int main (){
                                             usuarios[k].estado = USUARIO_VALIDADO;
                                             usuarios[jug1].estado = USUARIO_VALIDADO;
                                             resultadoPartida(partidas, partUsuario, usuarios);
+                                            ponerZeroManos(partidas, partUsuario);
                                         } else {
                                             memset(buffer, 0, sizeof(buffer));
                                             strcpy(buffer, "+Ok. Esperando al rival...\n");

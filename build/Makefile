@@ -142,29 +142,29 @@ client/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/build
 .PHONY : client/fast
 
-bj_client2.o: bj_client2.cpp.o
-.PHONY : bj_client2.o
+bj_client.o: bj_client.cpp.o
+.PHONY : bj_client.o
 
 # target to build an object file
-bj_client2.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/bj_client2.cpp.o
-.PHONY : bj_client2.cpp.o
+bj_client.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/bj_client.cpp.o
+.PHONY : bj_client.cpp.o
 
-bj_client2.i: bj_client2.cpp.i
-.PHONY : bj_client2.i
+bj_client.i: bj_client.cpp.i
+.PHONY : bj_client.i
 
 # target to preprocess a source file
-bj_client2.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/bj_client2.cpp.i
-.PHONY : bj_client2.cpp.i
+bj_client.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/bj_client.cpp.i
+.PHONY : bj_client.cpp.i
 
-bj_client2.s: bj_client2.cpp.s
-.PHONY : bj_client2.s
+bj_client.s: bj_client.cpp.s
+.PHONY : bj_client.s
 
 # target to generate assembly for a file
-bj_client2.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/bj_client2.cpp.s
-.PHONY : bj_client2.cpp.s
+bj_client.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/bj_client.cpp.s
+.PHONY : bj_client.cpp.s
 
 bj_server.o: bj_server.cpp.o
 .PHONY : bj_server.o
@@ -224,9 +224,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... client"
 	@echo "... server"
-	@echo "... bj_client2.o"
-	@echo "... bj_client2.i"
-	@echo "... bj_client2.s"
+	@echo "... bj_client.o"
+	@echo "... bj_client.i"
+	@echo "... bj_client.s"
 	@echo "... bj_server.o"
 	@echo "... bj_server.i"
 	@echo "... bj_server.s"

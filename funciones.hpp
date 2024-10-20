@@ -29,5 +29,6 @@ void inicializarEstadoPartidas(vector<Mesa> &partidas);
 void resultadoPartida(vector<Mesa> &partidas, const int part, const vector<Usuario> &usuarios);
 void mostrarDatosPartidas(const vector<Mesa> &partidas);
 void inicializarUsuarios(vector<Usuario> &usuarios);
+void ponerZeroManos(vector<Mesa> &partidas, const int part);
 
 #endif

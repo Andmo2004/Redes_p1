@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/andmo/Escritorio/Redes/github/Redes_p1/bj_client2.cpp" "CMakeFiles/client.dir/bj_client2.cpp.o" "gcc" "CMakeFiles/client.dir/bj_client2.cpp.o.d"
+  "/home/andmo/Escritorio/Redes/github/Redes_p1/bj_client.cpp" "CMakeFiles/client.dir/bj_client.cpp.o" "gcc" "CMakeFiles/client.dir/bj_client.cpp.o.d"
   )
 
 # Targets to which this target links.
