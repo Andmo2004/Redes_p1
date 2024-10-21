@@ -30,7 +30,8 @@ int main()
     // Configuración del servidor
     sockname.sin_family = AF_INET;
     sockname.sin_port = htons(2060);
-    sockname.sin_addr.s_addr = inet_addr("127.0.0.1");
+    //sockname.sin_addr.s_addr = inet_addr("127.0.0.1");
+    sockname.sin_addr.s_addr = inet_addr("172.21.128.62");
 
     // Se solicita la conexión con el servidor
     len_sockname = sizeof(sockname);

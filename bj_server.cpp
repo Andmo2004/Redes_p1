@@ -270,10 +270,10 @@ int main (){
                                             strcpy(buffer, "+Ok. Usuario registrado correctamente, sal e inicia sesion\n");
                                             send(usuarios[k].id,buffer,sizeof(buffer),0);
 
-
                                             //userData.insert(make_pair(string(username), string(password)));
                                             //mostrarUserData(userData);
-                                            salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
+                                            
+                                            //salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
                                             //sacarUsuarioDesconectado(usuarios, i);
                                             
                                         } else {
@@ -282,16 +282,18 @@ int main (){
                                             strcpy(buffer, "-Err. El usuario ya esta registrado\n");
                                             send(usuarios[k].id,buffer,sizeof(buffer),0);
 
-                                            salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
+                                            
+                                            //salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
                                             //sacarUsuarioDesconectado(usuarios, i);
                                         }
+                                        break;
                                     } else {
                                         //send_to_user(i, buffer, sizeof(buffer), "-Err. La informacion no se ha introducido correctamente\n");
                                         memset(buffer, 0, sizeof(buffer));
                                         strcpy(buffer, "-Err. La informacion no se ha introducido correctamente\n");
                                         send(usuarios[k].id,buffer,sizeof(buffer),0);
 
-                                        salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
+                                        //salirCliente(usuarios[k].id, &readfds, &numClientes, arrayClientes);
                                         //sacarUsuarioDesconectado(usuarios, i);
                                     }
                                 } else {
@@ -508,7 +510,7 @@ int main (){
                                             partidas[partUsuario].manoJugador1 = calcularValorMano(partidas[partUsuario].cartasJugador1);
                                             int numCartasJugador = partidas[partUsuario].cartasJugador1.size() - 1; 
 
-                                            mostrarCartasdelJugador(partidas[partUsuario].cartasJugador1);
+                                            //mostrarCartasdelJugador(partidas[partUsuario].cartasJugador1);
 
                                             memset(buffer, 0, sizeof(buffer));
 
@@ -531,7 +533,7 @@ int main (){
                                             partidas[partUsuario].manoJugador2 = calcularValorMano(partidas[partUsuario].cartasJugador2);
                                             int numCartasJugador = partidas[partUsuario].cartasJugador2.size() - 1; 
 
-                                            mostrarCartasdelJugador(partidas[partUsuario].cartasJugador2);
+                                           //mostrarCartasdelJugador(partidas[partUsuario].cartasJugador2);
 
                                             memset(buffer, 0, sizeof(buffer));
 
@@ -597,11 +599,6 @@ int main (){
                                             send(i,buffer,sizeof(buffer),0);    
                                         }
                                     }
-                                } else {
-                                    //send_to_user(i, buffer, sizeof(buffer), "-Err. El estado del usuario no corresponde a Validacion\n");
-                                    memset(buffer, 0, sizeof(buffer));
-                                    strcpy(buffer, "-Err. El estado del usuario no corresponde a jugando\n");
-                                    send(i,buffer,sizeof(buffer),0);
                                 }
                             }
 
@@ -641,6 +638,10 @@ int main (){
                                     salirCliente(i, &readfds, &numClientes, arrayClientes);
                                     sacarUsuarioDesconectado(usuarios, i);
                                 }
+                            } else {
+                                memset(buffer, 0, sizeof(buffer));
+                                strcpy(buffer, "-Err. Ese comando es incorrecto\n");
+                                send(i,buffer,sizeof(buffer),0);
                             }
                         }
 
