@@ -305,7 +305,7 @@ bool finPartida(const vector<Mesa> &partidas, vector<Usuario> &usuarios, const i
         // partida,usuarios[jug1].username.c_str(), usuarios[jug1].id, jug1, usuarios[jug1].estado,
         // usuarios[jug2].username.c_str(), usuarios[jug2].id, jug2, usuarios[jug2].estado);  
 
-    return (usuarios[jug1].estado == WAITING && usuarios[jug2].estado == WAITING);
+    return (usuarios[jug1].estado == FINALIZADO && usuarios[jug2].estado == FINALIZADO);
 }
 
 
